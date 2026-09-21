@@ -1,7 +1,7 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
 // Wir nutzen den stabilen Raw-Endpunkt von AllOrigins
-const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL);
+const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
 
