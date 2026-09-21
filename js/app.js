@@ -1,7 +1,7 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
-// Wir nutzen einen alternativen, performanten CORS-Proxy
-const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(ICAL_URL);
+// Wir nutzen CodeTabs als extrem stabilen CORS-Proxy
+const PROXY_URL = 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
 
