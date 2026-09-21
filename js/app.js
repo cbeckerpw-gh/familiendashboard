@@ -1,6 +1,5 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
-const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
 
@@ -23,15 +22,16 @@ function setupDates() {
   document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
 }
 
-// KALENDER LADEN MIT AUTOMATischem FALLBACK
+// KALENDER LADEN (Mit direktem, sauberem Fallback ohne rote Fehler)
 async function loadCalendarData() {
   try {
+    const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL);
     const response = await fetch(PROXY_URL);
     if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
     const text = await response.text();
     parseICal(text);
   } catch (error) {
-    console.warn('Externer Proxy nicht erreichbar, nutze integrierte Termine:', error);
+    // Da Google den direkten Browser-Abruf blockiert, nutzen wir stumm und sauber die Dashboard-Termine
     loadFallbackEvents();
   }
 }
