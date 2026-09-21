@@ -4,7 +4,6 @@ const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICA
 
 let realEvents = [];
 
-// INITIALISIERUNG
 document.addEventListener('DOMContentLoaded', () => {
   setupDates();
   loadCalendarData();
@@ -24,7 +23,7 @@ function setupDates() {
   document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
 }
 
-// KALENDER LADEN UND PARSEN
+// KALENDER LADEN
 async function loadCalendarData() {
   try {
     const response = await fetch(PROXY_URL);
@@ -32,20 +31,23 @@ async function loadCalendarData() {
     parseICal(text);
   } catch (error) {
     console.error('Fehler beim Laden des Kalenders:', error);
-    loadFallbackData();
+    showError("Fehler beim Laden der Termine.");
   }
 }
 
-// ICS PARSER
+// ROBUUSTER ICS PARSER
 function parseICal(icsText) {
-  const lines = icsText.split(/\r\n|\n|\r/);
+  // Zeilen zusammenführen, falls sie umgebrochen sind (iCal Standard)
+  const cleanedText = icsText.replace(/\r\n[ \t]/g, '').replace(/\n[ \t]/g, '');
+  const lines = cleanedText.split(/\r\n|\n|\r/);
+  
   realEvents = [];
   let currentEvent = null;
 
   lines.forEach(line => {
-    if (line === 'BEGIN:VEVENT') {
+    if (line.startsWith('BEGIN:VEVENT')) {
       currentEvent = {};
-    } else if (line === 'END:VEVENT' && currentEvent) {
+    } else if (line.startsWith('END:VEVENT') && currentEvent) {
       if (currentEvent.summary && currentEvent.start) {
         processEvent(currentEvent);
       }
@@ -53,7 +55,11 @@ function parseICal(icsText) {
     } else if (currentEvent) {
       const colonIdx = line.indexOf(':');
       if (colonIdx !== -1) {
-        const key = line.substring(0, colonIdx).split(';')[0];
+        let key = line.substring(0, colonIdx);
+        // Parameter abschneiden (z.B. DTSTART;TZID=Europe/Berlin:...)
+        if (key.includes(';')) {
+          key = key.split(';')[0];
+        }
         const val = line.substring(colonIdx + 1);
         if (key === 'SUMMARY') currentEvent.summary = val;
         if (key === 'DTSTART') currentEvent.start = val;
@@ -61,16 +67,15 @@ function parseICal(icsText) {
     }
   });
 
-  // Nach Uhrzeit sortieren
-  realEvents.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
   renderEvents();
 }
 
-// TERMIN KLASSIFIZIEREN & DATUM PRÜFEN
+// TERMIN VERARBEITEN & EINSORTIEREN
 function processEvent(ev) {
   const title = ev.summary;
   const lowerTitle = title.toLowerCase();
 
+  // Person / Kategorie erkennen anhand der Schlüsselwörter
   let person = 'familie';
   let name = 'Familie';
   let icon = '🏡';
@@ -93,23 +98,23 @@ function processEvent(ev) {
     icon = '👨';
   }
 
-  // Datum aus iCal String extrahieren (YYYYMMDD)
-  const year = parseInt(ev.start.substring(0, 4));
-  const month = parseInt(ev.start.substring(4, 6)) - 1;
-  const day = parseInt(ev.start.substring(6, 8));
-  
+  // iCal Datum parsen (Format YYYYMMDD oder YYYYMMDDTHHMMSS...)
+  const startStr = ev.start;
+  const year = parseInt(startStr.substring(0, 4));
+  const month = parseInt(startStr.substring(4, 6)) - 1;
+  const day = parseInt(startStr.substring(6, 8));
+
   const eventDate = new Date(year, month, day);
-  
+  eventDate.setHours(0, 0, 0, 0);
+
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
   const afterTomorrow = new Date(today);
   afterTomorrow.setDate(today.getDate() + 2);
-
-  eventDate.setHours(0,0,0,0);
 
   let dayCategory = '';
   if (eventDate.getTime() === today.getTime()) {
@@ -119,23 +124,28 @@ function processEvent(ev) {
   } else if (eventDate.getTime() === afterTomorrow.getTime()) {
     dayCategory = 'after-tomorrow';
   } else {
-    return; // Ausserhalb der 3 Tage
+    return; // Nur Heute, Morgen, Übermorgen anzeigen
   }
 
-  // Uhrzeit extrahieren
-  let timeStr = 'Ganze tägig';
+  // Uhrzeit extrahieren (falls vorhanden)
+  let timeStr = 'Ganztägig';
   let rawTime = '00:00';
-  if (ev.start.includes('T')) {
-    const timePart = ev.start.split('T')[1];
-    const hours = timePart.substring(0, 2);
+
+  if (startStr.includes('T')) {
+    // Beispiel: 20260921T153000Z oder 20260921T170000
+    const timePart = startStr.split('T')[1];
+    let hours = parseInt(timePart.substring(0, 2), 10);
     const minutes = timePart.substring(2, 4);
-    rawTime = `${hours}:${minutes}`;
-    // Sommerzeit-Korrektur falls nötig, oder direkt anzeigen:
-    // Da Google iCal oft UTC liefert, rechnen wir +2 Stunden drauf (Sommerzeit MESZ)
-    let hInt = parseInt(hours) + 2;
-    if (hInt >= 24) hInt -= 24;
-    const formattedHours = String(hInt).padStart(2, '0');
-    timeStr = `${formattedHours}:${minutes} Uhr`;
+
+    // Kleine Zeitzonen-Korrektur (falls Z / UTC, +2 Std für MESZ Sommerzeit)
+    if (startStr.endsWith('Z')) {
+      hours += 2;
+      if (hours >= 24) hours -= 24;
+    }
+
+    const formattedHours = String(hours).padStart(2, '0');
+    rawTime = `${formattedHours}:${minutes}`;
+    timeStr = `${rawTime} Uhr`;
   }
 
   realEvents.push({
@@ -143,21 +153,20 @@ function processEvent(ev) {
     person: person,
     name: name,
     icon: icon,
-    title: title,
+    title: title, // Originaltitel bleibt unangetastet!
     time: timeStr,
     rawTime: rawTime
   });
 }
 
-function loadFallbackData() {
-  realEvents = [
-    { day: 'today', person: 'oskar', name: 'Oskar', icon: '👦', title: 'Feuerwehr Oskar', time: '15:30 Uhr', rawTime: '15:30' },
-    { day: 'today', person: 'irma', name: 'Irma', icon: '👧', title: 'Irma Turnen', time: '16:00 Uhr', rawTime: '16:00' }
-  ];
-  renderEvents();
+// FEHLER / LEERER ZUSTAND ANZEIGEN
+function showError(msg) {
+  ['events-today', 'events-tomorrow', 'events-after-tomorrow'].forEach(id => {
+    document.getElementById(id).innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">${msg}</div>`;
+  });
 }
 
-// TERMIN-KARTEN RENDERN
+// KARTEN RENDERN
 function renderEvents() {
   const todayContainer = document.getElementById('events-today');
   const tomorrowContainer = document.getElementById('events-tomorrow');
@@ -174,6 +183,9 @@ function renderEvents() {
   if (todayList.length === 0) todayContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
   if (tomorrowList.length === 0) tomorrowContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
   if (afterTomorrowList.length === 0) afterTomorrowContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
+
+  // Nach Uhrzeit sortieren innerhalb des Tages
+  realEvents.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
 
   realEvents.forEach(ev => {
     const card = createEventCard(ev);
