@@ -1,5 +1,6 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
+const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
 
@@ -22,27 +23,28 @@ function setupDates() {
   document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
 }
 
-// KALENDER LADEN (Mit direktem Fallback bei Netzwerkblockaden)
+// KALENDER LADEN MIT AUTOMATischem FALLBACK
 async function loadCalendarData() {
   try {
-    // Versuche es über einen alternativen, stabilen Weg oder direkt
-    const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL));
+    const response = await fetch(PROXY_URL);
     if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
     const text = await response.text();
     parseICal(text);
   } catch (error) {
-    console.warn('Kalender-Abruf im Browser blockiert, nutze lokale Simulation.');
+    console.warn('Externer Proxy nicht erreichbar, nutze integrierte Termine:', error);
     loadFallbackEvents();
   }
 }
 
 function loadFallbackEvents() {
+  // Beispieldaten für die Ansicht, falls Google/Proxy blockiert
   realEvents = [
-    { title: "Mülltonne rausbringen", date: new Date(), time: "08:00" },
-    { title: "Familienrat", date: new Date(Date.now() + 86400000), time: "19:00" }
+    { day: 'today', person: 'papa', name: 'Papa', icon: '👨', title: 'Mülltonne rausbringen', location: 'Haus', description: 'Papier und Restmüll', time: '08:00 Uhr', rawTime: '08:00' },
+    { day: 'tomorrow', person: 'irma', name: 'Irma', icon: '👧', title: 'Kinderturnen', location: 'Sporthalle', description: 'Turnschuhe nicht vergessen', time: '16:00 Uhr', rawTime: '16:00' }
   ];
-  if (typeof renderCalendar === 'function') {
-    renderCalendar();
+  
+  if (typeof renderEvents === 'function') {
+    renderEvents();
   }
 }
 
