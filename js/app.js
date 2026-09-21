@@ -1,6 +1,7 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
-const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL);
+// Wir nutzen den /get-Endpunkt von AllOrigins für maximale Zuverlässigkeit
+const PROXY_URL = 'https://api.allorigins.win/get?url=' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
 
@@ -23,12 +24,18 @@ function setupDates() {
   document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
 }
 
-// KALENDER LADEN
+// KALENDER LADEN (Robust über JSON-Wrapper)
 async function loadCalendarData() {
   try {
     const response = await fetch(PROXY_URL);
-    const text = await response.text();
-    parseICal(text);
+    if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
+    const data = await response.json();
+    
+    if (data && data.contents) {
+      parseICal(data.contents);
+    } else {
+      throw new Error('Keine Kalenderdaten erhalten');
+    }
   } catch (error) {
     console.error('Fehler beim Laden des Kalenders:', error);
     showError("Fehler beim Laden der Termine.");
