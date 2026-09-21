@@ -35,9 +35,8 @@ async function loadCalendarData() {
   }
 }
 
-// ROBUUSTER ICS PARSER
+// ICS PARSER (Inkl. Location & Description)
 function parseICal(icsText) {
-  // Zeilen zusammenführen, falls sie umgebrochen sind (iCal Standard)
   const cleanedText = icsText.replace(/\r\n[ \t]/g, '').replace(/\n[ \t]/g, '');
   const lines = cleanedText.split(/\r\n|\n|\r/);
   
@@ -56,13 +55,14 @@ function parseICal(icsText) {
       const colonIdx = line.indexOf(':');
       if (colonIdx !== -1) {
         let key = line.substring(0, colonIdx);
-        // Parameter abschneiden (z.B. DTSTART;TZID=Europe/Berlin:...)
         if (key.includes(';')) {
           key = key.split(';')[0];
         }
         const val = line.substring(colonIdx + 1);
         if (key === 'SUMMARY') currentEvent.summary = val;
         if (key === 'DTSTART') currentEvent.start = val;
+        if (key === 'LOCATION') currentEvent.location = val;
+        if (key === 'DESCRIPTION') currentEvent.description = val.replace(/\\n/g, ' ').replace(/\\,/g, ',');
       }
     }
   });
@@ -75,7 +75,6 @@ function processEvent(ev) {
   const title = ev.summary;
   const lowerTitle = title.toLowerCase();
 
-  // Person / Kategorie erkennen anhand der Schlüsselwörter
   let person = 'familie';
   let name = 'Familie';
   let icon = '🏡';
@@ -98,7 +97,6 @@ function processEvent(ev) {
     icon = '👨';
   }
 
-  // iCal Datum parsen (Format YYYYMMDD oder YYYYMMDDTHHMMSS...)
   const startStr = ev.start;
   const year = parseInt(startStr.substring(0, 4));
   const month = parseInt(startStr.substring(4, 6)) - 1;
@@ -124,22 +122,19 @@ function processEvent(ev) {
   } else if (eventDate.getTime() === afterTomorrow.getTime()) {
     dayCategory = 'after-tomorrow';
   } else {
-    return; // Nur Heute, Morgen, Übermorgen anzeigen
+    return;
   }
 
-  // Uhrzeit extrahieren (falls vorhanden)
   let timeStr = 'Ganztägig';
   let rawTime = '00:00';
 
   if (startStr.includes('T')) {
-    // Beispiel: 20260921T153000Z oder 20260921T170000
     const timePart = startStr.split('T')[1];
     let hours = parseInt(timePart.substring(0, 2), 10);
     const minutes = timePart.substring(2, 4);
 
-    // Kleine Zeitzonen-Korrektur (falls Z / UTC, +2 Std für MESZ Sommerzeit)
     if (startStr.endsWith('Z')) {
-      hours += 2;
+      hours += 2; // Sommerzeit MESZ Anpassung
       if (hours >= 24) hours -= 24;
     }
 
@@ -153,20 +148,20 @@ function processEvent(ev) {
     person: person,
     name: name,
     icon: icon,
-    title: title, // Originaltitel bleibt unangetastet!
+    title: title,
+    location: ev.location || '',
+    description: ev.description || '',
     time: timeStr,
     rawTime: rawTime
   });
 }
 
-// FEHLER / LEERER ZUSTAND ANZEIGEN
 function showError(msg) {
   ['events-today', 'events-tomorrow', 'events-after-tomorrow'].forEach(id => {
     document.getElementById(id).innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">${msg}</div>`;
   });
 }
 
-// KARTEN RENDERN
 function renderEvents() {
   const todayContainer = document.getElementById('events-today');
   const tomorrowContainer = document.getElementById('events-tomorrow');
@@ -184,7 +179,6 @@ function renderEvents() {
   if (tomorrowList.length === 0) tomorrowContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
   if (afterTomorrowList.length === 0) afterTomorrowContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
 
-  // Nach Uhrzeit sortieren innerhalb des Tages
   realEvents.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
 
   realEvents.forEach(ev => {
@@ -198,9 +192,14 @@ function renderEvents() {
 function createEventCard(ev) {
   const card = document.createElement('div');
   card.className = `event-card ${ev.person}`;
-  card.onclick = () => speakText(`${ev.title}, ${ev.time}`);
+  
+  // Vorlesetext um Ort/Beschreibung erweitern, falls vorhanden
+  let speakString = `${ev.title}, ${ev.time}`;
+  if (ev.location) speakString += `, Ort: ${ev.location}`;
 
-  card.innerHTML = `
+  card.onclick = () => speakText(speakString);
+
+  let htmlContent = `
     <div class="event-header-line">
       <div class="event-person-badge">
         <span>${ev.icon}</span>
@@ -209,8 +208,18 @@ function createEventCard(ev) {
       <span class="event-time">${ev.time}</span>
     </div>
     <div class="event-title">${ev.title}</div>
-    <div class="event-tts-icon">🔊</div>
   `;
+
+  if (ev.location) {
+    htmlContent += `<div class="event-location">📍 ${ev.location}</div>`;
+  }
+  if (ev.description) {
+    htmlContent += `<div class="event-description">📝 ${ev.description}</div>`;
+  }
+
+  htmlContent += `<div class="event-tts-icon">🔊</div>`;
+  card.innerHTML = htmlContent;
+
   return card;
 }
 
@@ -247,6 +256,8 @@ function addDemoEvent() {
     name: 'Irma',
     icon: '👧',
     title: 'Test-Termin manuell',
+    location: 'Sporthalle',
+    description: 'Bitte Turnschuhe nicht vergessen',
     time: '18:00 Uhr',
     rawTime: '18:00'
   });
