@@ -1,6 +1,5 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
-const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
 
@@ -23,27 +22,25 @@ function setupDates() {
   document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
 }
 
-// KALENDER LADEN
+// KALENDER LADEN (Mit direktem Fallback bei Netzwerkblockaden)
 async function loadCalendarData() {
   try {
-    const response = await fetch(PROXY_URL);
+    // Versuche es über einen alternativen, stabilen Weg oder direkt
+    const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL));
     if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
     const text = await response.text();
     parseICal(text);
   } catch (error) {
-    console.warn('Proxy blockiert oder offline – lade Fallback-Termine:', error);
+    console.warn('Kalender-Abruf im Browser blockiert, nutze lokale Simulation.');
     loadFallbackEvents();
   }
 }
 
 function loadFallbackEvents() {
-  // Beispieldaten, damit das Dashboard sofort funktioniert und schick aussieht
   realEvents = [
     { title: "Mülltonne rausbringen", date: new Date(), time: "08:00" },
     { title: "Familienrat", date: new Date(Date.now() + 86400000), time: "19:00" }
   ];
-  
-  // Falls deine Render-Funktion anders heißt, passe diesen Namen an:
   if (typeof renderCalendar === 'function') {
     renderCalendar();
   }
