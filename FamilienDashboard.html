@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Familien-Steuereinheit &amp; Energie-Dashboard</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #7f8c8d;
+      
+      /* Color assignments */
+      --color-oskar: #2e7d32;   /* Green */
+      --color-irma: #1565c0;    /* Blue */
+      --color-mama: #7b1fa2;    /* Purple */
+      --color-papa: #00838f;    /* Teal */
+      --color-family: #d35400;  /* Orange */
+
+      /* Energy Colors */
+      --color-pv: #f39c12;
+      --color-grid: #e74c3c;
+      --color-battery: #2ecc71;
+      --color-home: #3498db;
+      --color-zappi: #9b59b6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 15px;
+      line-height: 1.4;
+    }
+
+    /* HEADER & FAMILY LEGEND */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .family-legend {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .legend-avatar {
+      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .legend-item.oskar, .event-card.oskar { background-color: var(--color-oskar); }
+    .legend-item.irma,  .event-card.irma  { background-color: var(--color-irma); }
+    .legend-item.mama,  .event-card.mama  { background-color: var(--color-mama); }
+    .legend-item.papa,  .event-card.papa  { background-color: var(--color-papa); }
+    .legend-item.familie, .event-card.familie { background-color: var(--color-family); }
+
+    .btn-readme {
+      background-color: #34495e;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-readme:hover {
+      background-color: #1a252f;
+    }
+
+    /* ENERGY FLOW SECTION */
+    .energy-section {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+
+    .energy-header {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .energy-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .energy-card {
+      padding: 15px;
+      border-radius: 12px;
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .energy-icon {
+      font-size: 2.2rem;
+    }
+
+    .energy-info .label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .energy-info .value {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    /* SVG FLOW ANIMATION */
+    .flow-container {
+      width: 100%;
+      height: 120px;
+      background: #fafbfc;
+      border-radius: 12px;
+      border: 1px solid #edf2f7;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .flow-line {
+      stroke: #cbd5e0;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .flow-particle {
+      stroke-dasharray: 8, 8;
+      animation: dash 1.5s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -16;
+      }
+    }
+
+    /* SHELLY ROOM MONITORS */
+    .room-lights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .room-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+
+    .room-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+
+    .status-dot.active {
+      background: #eab308;
+      box-shadow: 0 0 8px #fde047;
+    }
+
+    /* CALENDAR BOARD */
+    .calendar-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .calendar-board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .day-column {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .day-header {
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--bg-color);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .event-card {
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+    }
+
+    .event-card:active {
+      transform: scale(0.98);
+    }
+
+    .event-header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .event-person-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .event-time {
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .event-tts-icon {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      font-size: 1.1rem;
+      opacity: 0.7;
+    }
+
+    /* README MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 900px;
+      max-height: 85vh;
+      border-radius: 16px;
+      padding: 25px;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .readme-body pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin: 10px 0;
+    }
+
+    .readme-body h3 {
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .readme-body ul {
+      margin-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    /* DEMO CONTROLS PANEL AT BOTTOM */
+    .demo-controls {
+      margin-top: 30px;
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px dashed #cbd5e1;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER MIT LEGENDE -->
+  <header>
+    <div class="header-title-container">
+      <h1>🏡 Familiensteuereinheit</h1>
+    </div>
+
+    <!-- Feste Farb-Legende für die Kinder & Eltern -->
+    <div class="family-legend">
+      <div class="legend-item oskar">
+        <span class="legend-avatar">👦</span>
+        <span>Oskar</span>
+      </div>
+      <div class="legend-item irma">
+        <span class="legend-avatar">👧</span>
+        <span>Irma</span>
+      </div>
+      <div class="legend-item mama">
+        <span class="legend-avatar">👩</span>
+        <span>Mama</span>
+      </div>
+      <div class="legend-item papa">
+        <span class="legend-avatar">👨</span>
+        <span>Papa</span>
+      </div>
+    </div>
+
+    <button class="btn-readme" onclick="toggleReadme()">
+      <span>📖</span> Lissmich &amp; Dokumentation
+    </button>
+  </header>
+
+  <!-- ENERGIEFLUSS & STROM-MONITOR -->
+  <section class="energy-section">
+    <div class="energy-header">
+      ⚡ Live-Energiefluss (Sungrow, Zappi &amp; Shelly)
+    </div>
+
+    <div class="energy-flow-grid">
+      <div class="energy-card">
+        <div class="energy-icon">☀️</div>
+        <div class="energy-info">
+          <div class="label">Sungrow PV</div>
+          <div class="value" id="pv-val">6.4 kW</div>
+        </div>
+      </div>
+
+      <div class="energy-card">
+        <div class="energy-icon">🔋</div>
+        <div class="energy-info">
+          <div class="label">Speicher</div>
+          <div class="value" id="battery-val">88% (1.8 kW)</div>
+        </div>
+      </div>
+
+      <div class="energy-card">
+        <div class="energy-icon">🏠</div>
+        <div class="energy-info">
+          <div class="label">Hausverbrauch</div>
+          <div class="value" id="home-val">0.9 kW</div>
+        </div>
+      </div>
+
+      <div class="energy-card">
+        <div class="energy-icon">🔌</div>
+        <div class="energy-info">
+          <div class="label">Zappi Wallbox</div>
+          <div class="value" id="zappi-val">3.7 kW (Eco+)</div>
+        </div>
+      </div>
+
+      <div class="energy-card">
+        <div class="energy-icon">🌐</div>
+        <div class="energy-info">
+          <div class="label">Netzeinspeisung</div>
+          <div class="value" id="grid-val">0.0 kW</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG Graph zur visuellen Darstellung der Stromflüsse -->
+    <div class="flow-container">
+      <svg width="100%" height="100%" viewBox="0 0 800 120" preserveAspectRatio="none">
+        <!-- Verbindungslinien -->
+        <path d="M 100,30 L 400,60" class="flow-line" />
+        <path d="M 400,60 L 700,30" class="flow-line" />
+        <path d="M 400,60 L 250,95" class="flow-line" />
+        <path d="M 400,60 L 550,95" class="flow-line" />
+
+        <!-- Animierte Partikelflüsse -->
+        <path d="M 100,30 L 400,60" class="flow-line flow-particle" stroke="#f39c12" stroke-width="4" />
+        <path d="M 400,60 L 700,30" class="flow-line flow-particle" stroke="#9b59b6" stroke-width="4" />
+        <path d="M 400,60 L 250,95" class="flow-line flow-particle" stroke="#2ecc71" stroke-width="4" />
+        <path d="M 400,60 L 550,95" class="flow-line flow-particle" stroke="#3498db" stroke-width="4" />
+
+        <!-- Knotenpunkte -->
+        <circle cx="100" cy="30" r="8" fill="#f39c12" />
+        <circle cx="400" cy="60" r="10" fill="#2c3e50" />
+        <circle cx="700" cy="30" r="8" fill="#9b59b6" />
+        <circle cx="250" cy="95" r="8" fill="#2ecc71" />
+        <circle cx="550" cy="95" r="8" fill="#3498db" />
+      </svg>
+    </div>
+
+    <!-- Kinderzimmer Shelly Überwachung -->
+    <div class="room-lights-grid">
+      <div class="room-card">
+        <span>👦 Kinderzimmer Oskar (Shelly)</span>
+        <div class="room-status">
+          <div class="status-dot active" id="dot-oskar"></div>
+          <span id="text-oskar">Licht an (18W)</span>
+        </div>
+      </div>
+
+      <div class="room-card">
+        <span>👧 Kinderzimmer Irma (Shelly)</span>
+        <div class="room-status">
+          <div class="status-dot" id="dot-irma"></div>
+          <span id="text-irma">Licht aus (0W)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3-TAGE KALENDER BOARD -->
+  <main class="calendar-board">
+    <!-- HEUTE -->
+    <div class="day-column">
+      <div class="day-header">
+        <span>Heute</span>
+        <small id="date-today">--</small>
+      </div>
+      <div class="events-list" id="events-today"></div>
+    </div>
+
+    <!-- MORGEN -->
+    <div class="day-column">
+      <div class="day-header">
+        <span>Morgen</span>
+        <small id="date-tomorrow">--</small>
+      </div>
+      <div class="events-list" id="events-tomorrow"></div>
+    </div>
+
+    <!-- ÜBERMORGEN -->
+    <div class="day-column">
+      <div class="day-header">
+        <span>Übermorgen</span>
+        <small id="date-after-tomorrow">--</small>
+      </div>
+      <div class="events-list" id="events-after-tomorrow"></div>
+    </div>
+  </main>
+
+  <!-- DEMO STEUERUNG UNTEN -->
+  <div class="demo-controls">
+    <strong>⚙️ Interaktive Simulation (zum Testen):</strong>
+    <button onclick="toggleLight('oskar')">Licht Oskar Umschalten</button>
+    <button onclick="toggleLight('irma')">Licht Irma Umschalten</button>
+    <button onclick="addDemoEvent()">Test-Termin Hinzufügen</button>
+  </div>
+
+  <!-- INTERAKTIVES LISSMICH / DOKUMENTATIONS-MODAL -->
+  <div class="modal-overlay" id="readme-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📖 Entwickler-Dokumentation ("Lissmich")</h2>
+        <button class="close-btn" onclick="toggleReadme()">&times;</button>
+      </div>
+      <div class="readme-body">
+        <p>Willkommen zur Entwickler-Dokumentation der Familiensteuereinheit. Dieses Dashboard ist hochdynamisch und modular aufgebaut.</p>
+        
+        <h3>1. Farbzuordnung &amp; Kinderfreundlichkeit</h3>
+        <p>Jeder Termin erhält basierend auf Keywords im Titel automatisch das passende Personensymbol und die dazugehörige Farbe:</p>
+        <ul>
+          <li><strong>Oskar (Grün):</strong> Titel enthält "Oskar"</li>
+          <li><strong>Irma (Blau):</strong> Titel enthält "Irma"</li>
+          <li><strong>Mama (Violett):</strong> Titel enthält "Mama"</li>
+          <li><strong>Papa (Türkis):</strong> Titel enthält "Papa" oder "Christian"</li>
+        </ul>
+        <p>Beim Antippen einer Terminkarte nutzt die Anwendung die <strong>Web Speech API</strong>, um den Termin auf Deutsch vorzulesen.</p>
+
+        <h3>2. Google Kalender Anbindung (iCal / Google Calendar)</h3>
+        <p>Um deine echten Kalenderdaten einzubinden, nutze eine Serverless-Funktion oder wandle deine iCal-Links per JavaScript (<code>ical.js</code>) um:</p>
+        <pre><code>// Beispiel: iCal Feed abrufen und parsen
+fetch('DEINE_GOOGLE_ICAL_URL')
+  .then(res => res.text())
+  .then(csvData => {
+    // Parser-Logik zum Einfügen in das Dashboard
+  });</code></pre>
+
+        <h3>3. Sungrow Wechselrichter (Modbus TCP &amp; iSolarCloud API)</h3>
+        <p>Die Live-Daten deines Sungrow-Systems (Erzeugung, Speicher-SoC) können über zwei Wege bezogen werden:</p>
+        <ul>
+          <li><strong>Modbus TCP (Lokales Netzwerk):</strong> Direktes Abfragen des WiNet-S-Sticks über Port 502 via Node-RED oder Home Assistant Proxy.</li>
+          <li><strong>iSolarCloud REST API:</strong> Abfrage der OpenAPI von Sungrow für Erzeugung und Batteriezustand.</li>
+        </ul>
+
+        <h3>4. Zappi Wallbox Integration (myenergi API)</h3>
+        <p>Die Zappi Wallbox stellt eine offene HTTP-Schnittstelle bereit:</p>
+        <pre><code>// Abfrage des Zappi Lade-Status
+fetch('https://s18.myenergi.net/cgi-jstatus-Z', {
+  headers: { 'Authorization': 'Digest ...' }
+})
+.then(res => res.json())
+.then(data => console.log(data));</code></pre>
+
+        <h3>5. Shelly Relais (Kinderzimmer-Licht)</h3>
+        <p>Die Shellys im Kinderzimmer werden per lokaler REST-API abgefragt:</p>
+        <pre><code>// Abfrage Shelly Status
+fetch('http://192.168.178.XX/rpc/Shelly.GetStatus')
+  .then(res => res.json())
+  .then(data => {
+    const isOn = data['switch:0'].output;
+    const power = data['switch:0'].apower;
+  });</code></pre>
+
+        <h3>6. GitHub Pages Deployment</h3>
+        <ul>
+          <li>Lade diese <code>index.html</code> in dein GitHub Repository hoch.</li>
+          <li>Aktiviere unter <strong>Settings -> Pages</strong> den Branch <code>main</code>.</li>
+          <li>Rufe die URL auf dem iPad-Browser auf und füge sie zum Home-Bildschirm hinzu.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // MOCK DATA FOR DEMO
+    const sampleEvents = [
+      { id: 1, day: 'today', person: 'oskar', name: 'Oskar', icon: '👦', title: 'Feuerwehr Oskar', time: '15:30 - 17:00 Uhr' },
+      { id: 2, day: 'today', person: 'irma', name: 'Irma', icon: '👧', title: 'Irma Turnen', time: '16:00 - 17:00 Uhr' },
+      { id: 3, day: 'today', person: 'papa', name: 'Papa', icon: '👨', title: 'Einsatzabteilung', time: '19:00 Uhr' },
+      { id: 4, day: 'tomorrow', person: 'mama', name: 'Mama', icon: '👩', title: 'Mama Zahnarzt', time: '09:00 Uhr' },
+      { id: 5, day: 'tomorrow', person: 'oskar', name: 'Oskar', icon: '👦', title: 'Schwimmkurs Oskar', time: '14:30 Uhr' },
+      { id: 6, day: 'after-tomorrow', person: 'familie', name: 'Familie', icon: '🏡', title: 'Familienausflug', time: '11:00 Uhr' }
+    ];
+
+    let oskarLightOn = true;
+    let irmaLightOn = false;
+
+    // INITIALISIERUNG
+    document.addEventListener('DOMContentLoaded', () => {
+      setupDates();
+      renderEvents();
+    });
+
+    // DATUMS-KÖPFE SETZEN
+    function setupDates() {
+      const options = { weekday: 'short', day: '2-digit', month: '2-digit' };
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      const afterTomorrow = new Date(today);
+      afterTomorrow.setDate(today.getDate() + 2);
+
+      document.getElementById('date-today').innerText = today.toLocaleDateString('de-DE', options);
+      document.getElementById('date-tomorrow').innerText = tomorrow.toLocaleDateString('de-DE', options);
+      document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
+    }
+
+    // TERMIN-KARTEN RENDERN
+    function renderEvents() {
+      const todayContainer = document.getElementById('events-today');
+      const tomorrowContainer = document.getElementById('events-tomorrow');
+      const afterTomorrowContainer = document.getElementById('events-after-tomorrow');
+
+      todayContainer.innerHTML = '';
+      tomorrowContainer.innerHTML = '';
+      afterTomorrowContainer.innerHTML = '';
+
+      sampleEvents.forEach(ev => {
+        const card = createEventCard(ev);
+        if (ev.day === 'today') todayContainer.appendChild(card);
+        else if (ev.day === 'tomorrow') tomorrowContainer.appendChild(card);
+        else if (ev.day === 'after-tomorrow') afterTomorrowContainer.appendChild(card);
+      });
+    }
+
+    // TERMIN-KARTE ERSTELLEN
+    function createEventCard(ev) {
+      const card = document.createElement('div');
+      card.className = `event-card ${ev.person}`;
+      card.onclick = () => speakText(`${ev.title}, ${ev.time}`);
+
+      card.innerHTML = `
+        <div class="event-header-line">
+          <div class="event-person-badge">
+            <span>${ev.icon}</span>
+            <span>${ev.name}</span>
+          </div>
+          <span class="event-time">${ev.time}</span>
+        </div>
+        <div class="event-title">${ev.title}</div>
+        <div class="event-tts-icon">🔊</div>
+      `;
+      return card;
+    }
+
+    // TEXT-TO-SPEECH FOR KIDS
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'de-DE';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // SIMULATION UND DEMO-FUNKTIONEN
+    function toggleLight(room) {
+      if (room === 'oskar') {
+        oskarLightOn = !oskarLightOn;
+        const dot = document.getElementById('dot-oskar');
+        const txt = document.getElementById('text-oskar');
+        dot.className = oskarLightOn ? 'status-dot active' : 'status-dot';
+        txt.innerText = oskarLightOn ? 'Licht an (18W)' : 'Licht aus (0W)';
+      } else if (room === 'irma') {
+        irmaLightOn = !irmaLightOn;
+        const dot = document.getElementById('dot-irma');
+        const txt = document.getElementById('text-irma');
+        dot.className = irmaLightOn ? 'status-dot active' : 'status-dot';
+        txt.innerText = irmaLightOn ? 'Licht an (15W)' : 'Licht aus (0W)';
+      }
+    }
+
+    function addDemoEvent() {
+      sampleEvents.push({
+        id: Date.now(),
+        day: 'today',
+        person: 'irma',
+        name: 'Irma',
+        icon: '👧',
+        title: 'Irma Mallehrgang',
+        time: '18:00 Uhr'
+      });
+      renderEvents();
+    }
+
+    // README MODAL TOGGLE
+    function toggleReadme() {
+      const modal = document.getElementById('readme-modal');
+      modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>
