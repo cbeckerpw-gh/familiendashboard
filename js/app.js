@@ -1,4 +1,4 @@
-<script>
+
     // MOCK DATA FOR DEMO
     const sampleEvents = [
       { id: 1, day: 'today', person: 'oskar', name: 'Oskar', icon: '👦', title: 'Feuerwehr Oskar', time: '15:30 - 17:00 Uhr' },
@@ -116,4 +116,4 @@
       const modal = document.getElementById('readme-modal');
       modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
     }
-  </script>
+
