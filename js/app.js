@@ -1,6 +1,5 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
-// Da Browser direkte iCal-Abfragen blockieren, nutzen wir einen kostenlosen CORS-Proxy
 const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
@@ -33,12 +32,11 @@ async function loadCalendarData() {
     parseICal(text);
   } catch (error) {
     console.error('Fehler beim Laden des Kalenders:', error);
-    // Fallback auf Demo-Daten, falls das Laden fehlschlägt
     loadFallbackData();
   }
 }
 
-// EINFACHER ICS PARSER
+// ICS PARSER
 function parseICal(icsText) {
   const lines = icsText.split(/\r\n|\n|\r/);
   realEvents = [];
@@ -63,10 +61,12 @@ function parseICal(icsText) {
     }
   });
 
+  // Nach Uhrzeit sortieren
+  realEvents.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
   renderEvents();
 }
 
-// TERMIN KLASSIFIZIEREN (WER GEHÖRT DAZU?)
+// TERMIN KLASSIFIZIEREN & DATUM PRÜFEN
 function processEvent(ev) {
   const title = ev.summary;
   const lowerTitle = title.toLowerCase();
@@ -93,12 +93,13 @@ function processEvent(ev) {
     icon = '👨';
   }
 
-  // Datum parsen (Format: YYYYMMDD oder YYYYMMDDTHHMMSS...)
+  // Datum aus iCal String extrahieren (YYYYMMDD)
   const year = parseInt(ev.start.substring(0, 4));
   const month = parseInt(ev.start.substring(4, 6)) - 1;
   const day = parseInt(ev.start.substring(6, 8));
   
   const eventDate = new Date(year, month, day);
+  
   const today = new Date();
   today.setHours(0,0,0,0);
 
@@ -108,9 +109,9 @@ function processEvent(ev) {
   const afterTomorrow = new Date(today);
   afterTomorrow.setDate(today.getDate() + 2);
 
-  let dayCategory = '';
   eventDate.setHours(0,0,0,0);
 
+  let dayCategory = '';
   if (eventDate.getTime() === today.getTime()) {
     dayCategory = 'today';
   } else if (eventDate.getTime() === tomorrow.getTime()) {
@@ -118,16 +119,23 @@ function processEvent(ev) {
   } else if (eventDate.getTime() === afterTomorrow.getTime()) {
     dayCategory = 'after-tomorrow';
   } else {
-    return; // Ignorieren, wenn es nicht in den nächsten 3 Tagen liegt
+    return; // Ausserhalb der 3 Tage
   }
 
-  // Uhrzeit extrahieren, falls vorhanden
+  // Uhrzeit extrahieren
   let timeStr = 'Ganze tägig';
+  let rawTime = '00:00';
   if (ev.start.includes('T')) {
     const timePart = ev.start.split('T')[1];
     const hours = timePart.substring(0, 2);
     const minutes = timePart.substring(2, 4);
-    timeStr = `${hours}:${minutes} Uhr`;
+    rawTime = `${hours}:${minutes}`;
+    // Sommerzeit-Korrektur falls nötig, oder direkt anzeigen:
+    // Da Google iCal oft UTC liefert, rechnen wir +2 Stunden drauf (Sommerzeit MESZ)
+    let hInt = parseInt(hours) + 2;
+    if (hInt >= 24) hInt -= 24;
+    const formattedHours = String(hInt).padStart(2, '0');
+    timeStr = `${formattedHours}:${minutes} Uhr`;
   }
 
   realEvents.push({
@@ -136,15 +144,15 @@ function processEvent(ev) {
     name: name,
     icon: icon,
     title: title,
-    time: timeStr
+    time: timeStr,
+    rawTime: rawTime
   });
 }
 
-// FALLBACK DATEN, FALLS PROXY STREIKT
 function loadFallbackData() {
   realEvents = [
-    { day: 'today', person: 'oskar', name: 'Oskar', icon: '👦', title: 'Feuerwehr Oskar', time: '15:30 Uhr' },
-    { day: 'today', person: 'irma', name: 'Irma', icon: '👧', title: 'Irma Turnen', time: '16:00 Uhr' }
+    { day: 'today', person: 'oskar', name: 'Oskar', icon: '👦', title: 'Feuerwehr Oskar', time: '15:30 Uhr', rawTime: '15:30' },
+    { day: 'today', person: 'irma', name: 'Irma', icon: '👧', title: 'Irma Turnen', time: '16:00 Uhr', rawTime: '16:00' }
   ];
   renderEvents();
 }
@@ -159,10 +167,13 @@ function renderEvents() {
   tomorrowContainer.innerHTML = '';
   afterTomorrowContainer.innerHTML = '';
 
-  if (realEvents.length === 0) {
-    todayContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; padding:10px;">Keine Termine in den nächsten 3 Tagen</div>';
-    return;
-  }
+  const todayList = realEvents.filter(e => e.day === 'today');
+  const tomorrowList = realEvents.filter(e => e.day === 'tomorrow');
+  const afterTomorrowList = realEvents.filter(e => e.day === 'after-tomorrow');
+
+  if (todayList.length === 0) todayContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
+  if (tomorrowList.length === 0) tomorrowContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
+  if (afterTomorrowList.length === 0) afterTomorrowContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:8px;">Keine Termine</div>';
 
   realEvents.forEach(ev => {
     const card = createEventCard(ev);
@@ -172,7 +183,6 @@ function renderEvents() {
   });
 }
 
-// TERMIN-KARTE ERSTELLEN
 function createEventCard(ev) {
   const card = document.createElement('div');
   card.className = `event-card ${ev.person}`;
@@ -192,7 +202,6 @@ function createEventCard(ev) {
   return card;
 }
 
-// TEXT-TO-SPEECH FOR KIDS
 function speakText(text) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -203,7 +212,7 @@ function speakText(text) {
   }
 }
 
-// SIMULATION UND DEMO-FUNKTIONEN (FÜR LICHT ETC.)
+// DEMO / LICHT
 let oskarLightOn = true;
 let irmaLightOn = false;
 
@@ -226,7 +235,8 @@ function addDemoEvent() {
     name: 'Irma',
     icon: '👧',
     title: 'Test-Termin manuell',
-    time: '18:00 Uhr'
+    time: '18:00 Uhr',
+    rawTime: '18:00'
   });
   renderEvents();
 }
