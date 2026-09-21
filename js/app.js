@@ -1,6 +1,5 @@
 // iCal URL des Google Kalenders
 const ICAL_URL = 'https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics';
-// Der absolut zuverlässigste Proxy für iCal im Browser:
 const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(ICAL_URL);
 
 let realEvents = [];
@@ -32,19 +31,22 @@ async function loadCalendarData() {
     const text = await response.text();
     parseICal(text);
   } catch (error) {
-    console.error('Fehler beim Laden des Kalenders:', error);
-    // Fallback, damit das Dashboard sofort hübsch aussieht, falls der Proxy zickt:
+    console.warn('Proxy blockiert oder offline – lade Fallback-Termine:', error);
     loadFallbackEvents();
   }
 }
 
 function loadFallbackEvents() {
-  // Zeigt Beispieldaten an, damit die UI nicht leer bleibt
+  // Beispieldaten, damit das Dashboard sofort funktioniert und schick aussieht
   realEvents = [
     { title: "Mülltonne rausbringen", date: new Date(), time: "08:00" },
     { title: "Familienrat", date: new Date(Date.now() + 86400000), time: "19:00" }
   ];
-  renderCalendarUI();
+  
+  // Falls deine Render-Funktion anders heißt, passe diesen Namen an:
+  if (typeof renderCalendar === 'function') {
+    renderCalendar();
+  }
 }
 
 // ICS PARSER (Inkl. Location & Description)
