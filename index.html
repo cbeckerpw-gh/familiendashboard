@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Familien-Steuereinheit &amp; Energie-Dashboard</title>
-  
+  <!-- Verknüpfung zur ausgelagerten CSS-Datei -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -14,7 +15,6 @@
       <h1>🏡 Familiensteuereinheit</h1>
     </div>
 
-    <!-- Feste Farb-Legende für die Kinder & Eltern -->
     <div class="family-legend">
       <div class="legend-item oskar">
         <span class="legend-avatar">👦</span>
@@ -87,22 +87,18 @@
       </div>
     </div>
 
-    <!-- SVG Graph zur visuellen Darstellung der Stromflüsse -->
     <div class="flow-container">
       <svg width="100%" height="100%" viewBox="0 0 800 120" preserveAspectRatio="none">
-        <!-- Verbindungslinien -->
         <path d="M 100,30 L 400,60" class="flow-line" />
         <path d="M 400,60 L 700,30" class="flow-line" />
         <path d="M 400,60 L 250,95" class="flow-line" />
         <path d="M 400,60 L 550,95" class="flow-line" />
 
-        <!-- Animierte Partikelflüsse -->
         <path d="M 100,30 L 400,60" class="flow-line flow-particle" stroke="#f39c12" stroke-width="4" />
         <path d="M 400,60 L 700,30" class="flow-line flow-particle" stroke="#9b59b6" stroke-width="4" />
         <path d="M 400,60 L 250,95" class="flow-line flow-particle" stroke="#2ecc71" stroke-width="4" />
         <path d="M 400,60 L 550,95" class="flow-line flow-particle" stroke="#3498db" stroke-width="4" />
 
-        <!-- Knotenpunkte -->
         <circle cx="100" cy="30" r="8" fill="#f39c12" />
         <circle cx="400" cy="60" r="10" fill="#2c3e50" />
         <circle cx="700" cy="30" r="8" fill="#9b59b6" />
@@ -111,7 +107,6 @@
       </svg>
     </div>
 
-    <!-- Kinderzimmer Shelly Überwachung -->
     <div class="room-lights-grid">
       <div class="room-card">
         <span>👦 Kinderzimmer Oskar (Shelly)</span>
@@ -133,7 +128,6 @@
 
   <!-- 3-TAGE KALENDER BOARD -->
   <main class="calendar-board">
-    <!-- HEUTE -->
     <div class="day-column">
       <div class="day-header">
         <span>Heute</span>
@@ -142,7 +136,6 @@
       <div class="events-list" id="events-today"></div>
     </div>
 
-    <!-- MORGEN -->
     <div class="day-column">
       <div class="day-header">
         <span>Morgen</span>
@@ -151,7 +144,6 @@
       <div class="events-list" id="events-tomorrow"></div>
     </div>
 
-    <!-- ÜBERMORGEN -->
     <div class="day-column">
       <div class="day-header">
         <span>Übermorgen</span>
@@ -161,7 +153,6 @@
     </div>
   </main>
 
-  <!-- DEMO STEUERUNG UNTEN -->
   <div class="demo-controls">
     <strong>⚙️ Interaktive Simulation (zum Testen):</strong>
     <button onclick="toggleLight('oskar')">Licht Oskar Umschalten</button>
@@ -169,7 +160,7 @@
     <button onclick="addDemoEvent()">Test-Termin Hinzufügen</button>
   </div>
 
-  <!-- INTERAKTIVES LISSMICH / DOKUMENTATIONS-MODAL -->
+  <!-- MODAL / LISSMICH -->
   <div class="modal-overlay" id="readme-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -177,63 +168,14 @@
         <button class="close-btn" onclick="toggleReadme()">&times;</button>
       </div>
       <div class="readme-body">
-        <p>Willkommen zur Entwickler-Dokumentation der Familiensteuereinheit. Dieses Dashboard ist hochdynamisch und modular aufgebaut.</p>
-        
-        <h3>1. Farbzuordnung &amp; Kinderfreundlichkeit</h3>
-        <p>Jeder Termin erhält basierend auf Keywords im Titel automatisch das passende Personensymbol und die dazugehörige Farbe:</p>
-        <ul>
-          <li><strong>Oskar (Grün):</strong> Titel enthält "Oskar"</li>
-          <li><strong>Irma (Blau):</strong> Titel enthält "Irma"</li>
-          <li><strong>Mama (Violett):</strong> Titel enthält "Mama"</li>
-          <li><strong>Papa (Türkis):</strong> Titel enthält "Papa" oder "Christian"</li>
-        </ul>
-        <p>Beim Antippen einer Terminkarte nutzt die Anwendung die <strong>Web Speech API</strong>, um den Termin auf Deutsch vorzulesen.</p>
-
-        <h3>2. Google Kalender Anbindung (iCal / Google Calendar)</h3>
-        <p>Um deine echten Kalenderdaten einzubinden, nutze eine Serverless-Funktion oder wandle deine iCal-Links per JavaScript (<code>ical.js</code>) um:</p>
-        <pre><code>// Beispiel: iCal Feed abrufen und parsen
-fetch('DEINE_GOOGLE_ICAL_URL')
-  .then(res => res.text())
-  .then(csvData => {
-    // Parser-Logik zum Einfügen in das Dashboard
-  });</code></pre>
-
-        <h3>3. Sungrow Wechselrichter (Modbus TCP &amp; iSolarCloud API)</h3>
-        <p>Die Live-Daten deines Sungrow-Systems (Erzeugung, Speicher-SoC) können über zwei Wege bezogen werden:</p>
-        <ul>
-          <li><strong>Modbus TCP (Lokales Netzwerk):</strong> Direktes Abfragen des WiNet-S-Sticks über Port 502 via Node-RED oder Home Assistant Proxy.</li>
-          <li><strong>iSolarCloud REST API:</strong> Abfrage der OpenAPI von Sungrow für Erzeugung und Batteriezustand.</li>
-        </ul>
-
-        <h3>4. Zappi Wallbox Integration (myenergi API)</h3>
-        <p>Die Zappi Wallbox stellt eine offene HTTP-Schnittstelle bereit:</p>
-        <pre><code>// Abfrage des Zappi Lade-Status
-fetch('https://s18.myenergi.net/cgi-jstatus-Z', {
-  headers: { 'Authorization': 'Digest ...' }
-})
-.then(res => res.json())
-.then(data => console.log(data));</code></pre>
-
-        <h3>5. Shelly Relais (Kinderzimmer-Licht)</h3>
-        <p>Die Shellys im Kinderzimmer werden per lokaler REST-API abgefragt:</p>
-        <pre><code>// Abfrage Shelly Status
-fetch('http://192.168.178.XX/rpc/Shelly.GetStatus')
-  .then(res => res.json())
-  .then(data => {
-    const isOn = data['switch:0'].output;
-    const power = data['switch:0'].apower;
-  });</code></pre>
-
-        <h3>6. GitHub Pages Deployment</h3>
-        <ul>
-          <li>Lade diese <code>index.html</code> in dein GitHub Repository hoch.</li>
-          <li>Aktiviere unter <strong>Settings -> Pages</strong> den Branch <code>main</code>.</li>
-          <li>Rufe die URL auf dem iPad-Browser auf und füge sie zum Home-Bildschirm hinzu.</li>
-        </ul>
+        <p>Projektstruktur ist jetzt modular aufgebaut in <code>/css/style.css</code> und <code>/js/app.js</code>.</p>
+        <h3>APIs &amp; Erweiterungen</h3>
+        <p>Hier dokumentieren wir später alle Zugriffe für Sungrow, Zappi und Shelly.</p>
       </div>
     </div>
   </div>
 
-  
+  <!-- Verknüpfung zur ausgelagerten JavaScript-Datei -->
+  <script src="js/app.js"></script>
 </body>
 </html>
