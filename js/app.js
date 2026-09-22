@@ -242,3 +242,18 @@ function toggleReadme() {
     const modal = document.getElementById('readme-modal');
     modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
 }
+
+// DASHBOARD MANUELL AKTUALISIEREN (Perfekt für den Kiosk-Modus / iPad)
+function refreshDashboard() {
+    const btn = document.querySelector('.refresh-btn');
+    if (btn) {
+        btn.style.transform = 'rotate(360deg)';
+        setTimeout(() => btn.style.transform = 'none', 300);
+    }
+    
+    // Daten neu einlesen
+    loadCalendarData();
+    
+    // Optional: Ein kurzer visueller Hinweis im Konsolen-Log oder Toast
+    console.log('Dashboard manuell aktualisiert.');
+}
