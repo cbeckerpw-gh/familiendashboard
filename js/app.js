@@ -234,17 +234,39 @@ async function loadEnergyData() {
         
         const data = await response.json();
 
-        // UI-Werte aktualisieren
+        // 1. PV-Leistung
         document.getElementById('pv-val').innerText = `${data.pvPower} kW`;
-        document.getElementById('battery-val').innerText = `${data.batterySoc}% (${data.batteryPower >= 0 ? '+' : ''}${data.batteryPower} kW)`;
+
+        // 2. Speicher mit Richtungspfeil (Grün laden / Blau entladen)
+        const batteryElem = document.getElementById('battery-val');
+        let batteryArrow = '';
+        let batteryColor = '';
+        if (data.batteryPower > 0) {
+            batteryArrow = ' ↗'; // Lädt
+            batteryColor = '#2ecc71';
+        } else if (data.batteryPower < 0) {
+            batteryArrow = ' ↙'; // Entlädt
+            batteryColor = '#3498db';
+        } else {
+            batteryArrow = ' ⏸';
+            batteryColor = 'inherit';
+        }
+        batteryElem.innerHTML = `${data.batterySoc}% (<span style="color:${batteryColor}">${data.batteryPower >= 0 ? '+' : ''}${data.batteryPower} kW${batteryArrow}</span>)`;
+
+        // 3. Hausverbrauch
         document.getElementById('home-val').innerText = `${data.housePower} kW`;
+
+        // 4. Zappi Wallbox
         document.getElementById('zappi-val').innerText = `${data.zappiPower} kW`;
         
+        // 5. Netz / Grid mit Pfeil (Rot/Orange Bezug, Grün Einspeisung)
         const gridElem = document.getElementById('grid-val');
         if (data.gridPower < 0) {
-            gridElem.innerText = `Einspeisung: ${Math.abs(data.gridPower)} kW`;
+            gridElem.innerHTML = `<span style="color:#2ecc71">Einspeisung: ${Math.abs(data.gridPower)} kW ↗</span>`;
+        } else if (data.gridPower > 0) {
+            gridElem.innerHTML = `<span style="color:#e67e22">Bezug: ${data.gridPower} kW ↙</span>`;
         } else {
-            gridElem.innerText = `Bezug: ${data.gridPower} kW`;
+            gridElem.innerText = `0.0 kW (Neutral)`;
         }
 
         if (data.updatedAt) {
