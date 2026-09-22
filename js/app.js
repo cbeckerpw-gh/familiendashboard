@@ -57,7 +57,13 @@ function processLoadedEvents(events) {
         let name = 'Familie';
         let icon = '🏡';
 
-        if (person === 'oskar' || lowerTitle.includes('oskar')) {
+        if (person === 'papa') {
+            name = 'Papa';
+            icon = '👨';
+        } else if (person === 'mama') {
+            name = 'Mama';
+            icon = '👩';
+        } else if (person === 'oskar' || lowerTitle.includes('oskar')) {
             person = 'oskar';
             name = 'Oskar';
             icon = '👦';
@@ -69,12 +75,6 @@ function processLoadedEvents(events) {
             person = 'familie';
             name = 'Eltern';
             icon = '👥';
-        } else if (person === 'mama') {
-            name = 'Mama';
-            icon = '👩';
-        } else if (person === 'papa') {
-            name = 'Papa';
-            icon = '👨';
         }
 
         const startStr = ev.start;
