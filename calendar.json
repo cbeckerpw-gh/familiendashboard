@@ -15,6 +15,13 @@
   },
   {
     "sourcePerson": "familie",
+    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
+    "start": "20261005T150000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "familie",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20260923T144500Z",
     "location": "",
@@ -35,20 +42,6 @@
     "description": ""
   },
   {
-    "sourcePerson": "familie",
-    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
-    "start": "20261005T150000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
-    "start": "20260930T000000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
-    "description": ""
-  },
-  {
     "sourcePerson": "papa",
     "summary": "Geburtstag: Heinz - Gerd Becker",
     "start": "20261001T000000Z",
@@ -57,30 +50,9 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Einkaufen",
-    "start": "20260924T140000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Einkaufen",
-    "start": "20261001T140000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "112 Die Feuerwehr DMAX es geht wieder los",
-    "start": "20260924T191500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "112 Die Feuerwehr DMAX es geht wieder los",
-    "start": "20261001T191500Z",
-    "location": "",
+    "summary": "Sabine Koch Geburtstag",
+    "start": "20260930T000000Z",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": ""
   },
   {
@@ -120,15 +92,36 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Test papa",
-    "start": "20260922T090000Z",
+    "summary": "Einkaufen",
+    "start": "20260924T140000Z",
     "location": "",
     "description": ""
   },
   {
     "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "20260923T000000Z",
+    "summary": "Einkaufen",
+    "start": "20261001T140000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "112 Die Feuerwehr DMAX es geht wieder los",
+    "start": "20260924T191500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "112 Die Feuerwehr DMAX es geht wieder los",
+    "start": "20261001T191500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Test papa",
+    "start": "20260922T090000Z",
     "location": "",
     "description": ""
   },
