@@ -1,74 +1,32 @@
 [
   {
-    "start": "20260806T220000Z",
-    "summary": "Kita schließt um 14.15 Uhr"
-  },
-  {
-    "start": "20260831T153000Z",
-    "summary": "Volksbank 18Uhr"
-  },
-  {
-    "start": "20260609T220000Z",
-    "summary": "Kita geschlossen - Betriebsausflug"
-  },
-  {
-    "start": "20261221T160000Z",
-    "summary": "Kinderfeuerwehr (Barkhausen) 17-18:30Uhr"
-  },
-  {
-    "start": "20260707T220000Z",
-    "description": "An diesem Tag kommen nur die zukünftigen Schulkinder in die Kita.",
-    "summary": "Abschiedstag Schulanfänger*innen / Kita geschlossen"
-  },
-  {
     "start": "20260909T164500",
     "summary": "Oskar Kinderturnen 17:15-18:15Uhr"
   },
   {
-    "start": "20260923T164500",
-    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr"
-  },
-  {
-    "start": "20260704T070000Z",
-    "location": "Bielefelder Str. 57\\, 33829 Borgholzhausen\\, Deutschland",
-    "summary": "Bauer Bernd mit Oskar 10Uhr"
-  },
-  {
-    "start": "20260907T160000Z",
-    "summary": "Kinderfeuerwehr (Lerbeck) 17Uhr"
-  },
-  {
-    "start": "20260616T160000Z",
-    "summary": "Schatzi mit den Blumengirls weg"
-  },
-  {
-    "start": "20260520",
-    "description": "Für die zukünftigen Schulkinder.",
-    "summary": "Schnuppertage Grundschule "
-  },
-  {
-    "start": "20261108T090000Z",
-    "summary": "Kinderfeuerwehr (Hausberge) Völkerballturnier ???Uhr"
-  },
-  {
-    "start": "20260922T164500",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr"
-  },
-  {
-    "start": "20260915T163000Z",
-    "summary": "Elternabend Schule 19Uhr"
-  },
-  {
-    "start": "20261116T160000Z",
-    "summary": "Kinderfeuerwehr (Barkhausen) 17Uhr"
-  },
-  {
-    "start": "20260509T123000Z",
-    "summary": "Geburtstag Hassan 15Uhr"
+    "start": "20260921T150000Z",
+    "summary": "Oskar - Kinderfeuerwehr (Barkhausen) 17Uhr"
   },
   {
     "start": "20260615T130000Z",
     "summary": "Treffen Kilian Oskar & Irma"
+  },
+  {
+    "start": "20260601T062000Z",
+    "summary": "Oskar Impfung"
+  },
+  {
+    "start": "20261102T160000Z",
+    "summary": "Kinderfeuerwehr (Lerbeck) 17Uhr"
+  },
+  {
+    "start": "20260804T150000Z",
+    "location": "Die Knolle\\, Königswall 1\\, 32423 Minden\\, Deutschland",
+    "summary": "Essen Wago 17:30Uhr"
+  },
+  {
+    "start": "20260715T103000Z",
+    "summary": "Primarkt"
   },
   {
     "start": "20261116T073000Z",
@@ -79,21 +37,20 @@
     "summary": "Versicherung Unfall Beratung Sascha Wolf 10Uhr"
   },
   {
-    "start": "20261005T150000Z",
-    "summary": "Kinderfeuerwehr (Lerbeck) 17Uhr"
+    "start": "20261116T160000Z",
+    "summary": "Kinderfeuerwehr (Barkhausen) 17Uhr"
+  },
+  {
+    "start": "20260702T050000Z",
+    "summary": "Stadtwerke Wasserzähler tausch"
   },
   {
     "start": "20261207T160000Z",
     "summary": "Kinderfeuerwehr (Lerbeck) 17-18:30Uhr"
   },
   {
-    "start": "20260804T150000Z",
-    "location": "Die Knolle\\, Königswall 1\\, 32423 Minden\\, Deutschland",
-    "summary": "Essen Wago 17:30Uhr"
-  },
-  {
-    "start": "20260921T150000Z",
-    "summary": "Oskar - Kinderfeuerwehr (Barkhausen) 17Uhr"
+    "start": "20260809T220000Z",
+    "summary": "Sommerurlaub- Kita geschlossen"
   },
   {
     "start": "20261105T230000Z",
@@ -106,20 +63,35 @@
     "summary": "Fotografin Kindergarten 15Uhr"
   },
   {
-    "start": "20261102T160000Z",
-    "summary": "Kinderfeuerwehr (Lerbeck) 17Uhr"
+    "start": "20260520",
+    "description": "Für die zukünftigen Schulkinder.",
+    "summary": "Schnuppertage Grundschule "
   },
   {
-    "start": "20250909T164500",
-    "summary": "Irma Kinderturnen 17:15 -18:15Uhr"
+    "start": "20260704T070000Z",
+    "location": "Bielefelder Str. 57\\, 33829 Borgholzhausen\\, Deutschland",
+    "summary": "Bauer Bernd mit Oskar 10Uhr"
   },
   {
-    "start": "20260809T220000Z",
-    "summary": "Sommerurlaub- Kita geschlossen"
+    "start": "20261108T090000Z",
+    "summary": "Kinderfeuerwehr (Hausberge) Völkerballturnier ???Uhr"
   },
   {
-    "start": "20260601T062000Z",
-    "summary": "Oskar Impfung"
+    "start": "20260707T220000Z",
+    "description": "An diesem Tag kommen nur die zukünftigen Schulkinder in die Kita.",
+    "summary": "Abschiedstag Schulanfänger*innen / Kita geschlossen"
+  },
+  {
+    "start": "20260923T164500",
+    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr"
+  },
+  {
+    "start": "20260806T220000Z",
+    "summary": "Kita schließt um 14.15 Uhr"
+  },
+  {
+    "start": "20260616T160000Z",
+    "summary": "Schatzi mit den Blumengirls weg"
   },
   {
     "start": "20260824T073000Z",
@@ -127,11 +99,39 @@
     "summary": "Dino Park Müncherhagen"
   },
   {
-    "start": "20260702T050000Z",
-    "summary": "Stadtwerke Wasserzähler tausch"
+    "start": "20261005T150000Z",
+    "summary": "Kinderfeuerwehr (Lerbeck) 17Uhr"
   },
   {
-    "start": "20260715T103000Z",
-    "summary": "Primarkt"
+    "start": "20260609T220000Z",
+    "summary": "Kita geschlossen - Betriebsausflug"
+  },
+  {
+    "start": "20250909T164500",
+    "summary": "Irma Kinderturnen 17:15 -18:15Uhr"
+  },
+  {
+    "start": "20260509T123000Z",
+    "summary": "Geburtstag Hassan 15Uhr"
+  },
+  {
+    "start": "20260907T160000Z",
+    "summary": "Kinderfeuerwehr (Lerbeck) 17Uhr"
+  },
+  {
+    "start": "20261221T160000Z",
+    "summary": "Kinderfeuerwehr (Barkhausen) 17-18:30Uhr"
+  },
+  {
+    "start": "20260915T163000Z",
+    "summary": "Elternabend Schule 19Uhr"
+  },
+  {
+    "start": "20260922T164500",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr"
+  },
+  {
+    "start": "20260831T153000Z",
+    "summary": "Volksbank 18Uhr"
   }
 ]
