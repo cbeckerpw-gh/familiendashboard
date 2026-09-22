@@ -53,30 +53,28 @@ function processLoadedEvents(events) {
         const title = ev.summary;
         const lowerTitle = title.toLowerCase();
 
-        let person = 'familie';
+        let person = ev.sourcePerson || 'familie';
         let name = 'Familie';
         let icon = '🏡';
 
-        if (lowerTitle.includes('oskar')) {
+        if (person === 'oskar' || lowerTitle.includes('oskar')) {
             person = 'oskar';
             name = 'Oskar';
             icon = '👦';
-        } else if (lowerTitle.includes('irma')) {
+        } else if (person === 'irma' || lowerTitle.includes('irma')) {
             person = 'irma';
             name = 'Irma';
             icon = '👧';
-        } else if (lowerTitle.includes('mama') || lowerTitle.includes('mutter')) {
-            person = 'mama';
-            name = 'Mama';
-            icon = '👩';
-        } else if (lowerTitle.includes('papa') || lowerTitle.includes('vater')) {
-            person = 'papa';
-            name = 'Papa';
-            icon = '👨';
         } else if (lowerTitle.includes('elternabend') || lowerTitle.includes('eltern')) {
             person = 'familie';
             name = 'Eltern';
             icon = '👥';
+        } else if (person === 'mama') {
+            name = 'Mama';
+            icon = '👩';
+        } else if (person === 'papa') {
+            name = 'Papa';
+            icon = '👨';
         }
 
         const startStr = ev.start;
