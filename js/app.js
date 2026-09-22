@@ -3,6 +3,7 @@ let realEvents = [];
 document.addEventListener('DOMContentLoaded', () => {
     setupDates();
     loadCalendarData();
+    loadEnergyData();
 });
 
 // DATUMS-KÖPFE SETZEN
@@ -225,6 +226,37 @@ function speakText(text) {
     }
 }
 
+// ENERGIE-DATEN LADEN (Aus energy.json der GitHub Action)
+async function loadEnergyData() {
+    try {
+        const response = await fetch('energy.json?' + new Date().getTime()); // Cache-Buster
+        if (!response.ok) throw new Error('Netzwerk-Antwort für Energie war nicht ok');
+        
+        const data = await response.json();
+
+        // UI-Werte aktualisieren
+        document.getElementById('pv-val').innerText = `${data.pvPower} kW`;
+        document.getElementById('battery-val').innerText = `${data.batterySoc}% (${data.batteryPower >= 0 ? '+' : ''}${data.batteryPower} kW)`;
+        document.getElementById('home-val').innerText = `${data.housePower} kW`;
+        document.getElementById('zappi-val').innerText = `${data.zappiPower} kW`;
+        
+        const gridElem = document.getElementById('grid-val');
+        if (data.gridPower < 0) {
+            gridElem.innerText = `Einspeisung: ${Math.abs(data.gridPower)} kW`;
+        } else {
+            gridElem.innerText = `Bezug: ${data.gridPower} kW`;
+        }
+
+        if (data.updatedAt) {
+            const updateTime = new Date(data.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('energy-updated').innerText = `Stand: ${updateTime} Uhr`;
+        }
+
+    } catch (error) {
+        console.error('Fehler beim Laden der energy.json:', error);
+    }
+}
+
 // DEMO / LICHT
 let oskarLightOn = true;
 let irmaLightOn = false;
@@ -269,9 +301,9 @@ function refreshDashboard() {
         setTimeout(() => btn.style.transform = 'none', 300);
     }
     
-    // Daten neu einlesen
+    // Daten neu einlesen (Kalender & Energie)
     loadCalendarData();
+    loadEnergyData();
     
-    // Optional: Ein kurzer visueller Hinweis im Konsolen-Log oder Toast
     console.log('Dashboard manuell aktualisiert.');
 }
