@@ -19,14 +19,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: node-ical installieren
+        run: npm install node-ical
+
       - name: Kalender abrufen und als JSON speichern
         run: |
           node -e '
           const fs = require("fs");
-          async function fetchICal(url) {
-              const res = await fetch(url);
-              return await res.text();
-          }
+          const ical = require("node-ical");
 
           async function update() {
               const calendarSources = [
@@ -36,42 +36,48 @@ jobs:
               ];
 
               let allEvents = [];
+              const now = new Date();
+              // Zeitraum definieren: Von heute vor 1 Tag bis 14 Tage in die Zukunft
+              const startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+              const endDate = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
               for (const source of calendarSources) {
                   try {
-                      const text = await fetchICal(source.url);
-                      const cleanedText = text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
-                      const lines = cleanedText.split(/\r\n|\n|\r/);
-                      let currentEvent = null;
+                      // node-ical lädt den Feed und rechnet Serientermine (RRULE) automatisch aus
+                      const webEvents = await ical.async.fromURL(source.url);
 
-                      lines.forEach(line => {
-                          if (line.startsWith("BEGIN:VEVENT")) {
-                              currentEvent = { sourcePerson: source.defaultPerson };
-                          } else if (line.startsWith("END:VEVENT") && currentEvent) {
-                              if (currentEvent.summary && currentEvent.start) {
-                                  allEvents.push(currentEvent);
-                              }
-                              currentEvent = null;
-                          } else if (currentEvent) {
-                              const colonIdx = line.indexOf(":");
-                              if (colonIdx !== -1) {
-                                  let key = line.substring(0, colonIdx);
-                                  if (key.includes(";")) key = key.split(";")[0];
-                                  const val = line.substring(colonIdx + 1);
-                                  if (key === "SUMMARY") currentEvent.summary = val;
-                                  if (key === "DTSTART") currentEvent.start = val;
-                                  if (key === "LOCATION") currentEvent.location = val;
-                                  if (key === "DESCRIPTION") currentEvent.description = val;
+                      for (let k in webEvents) {
+                          const ev = webEvents[k];
+                          
+                          if (ev.type === "VEVENT") {
+                              // Wir filtern nach dem Zeitraum, um auch wiederkehrende Instanzen zu erwischen
+                              const eventStart = new Date(ev.start);
+                              const eventEnd = new Date(ev.end || ev.start);
+
+                              if (eventEnd >= startDate && eventStart <= endDate) {
+                                  // Datum im gleichen Format (YYYYMMDD und ggf. YYYYMMDDTHHmmss) wie bisher aufbereiten
+                                  const pad = (n) => String(n).padStart(2, "0");
+                                  const startFormatted = ev.dateOnly 
+                                      ? `${eventStart.getFullYear()}${pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}`
+                                      : `${eventStart.getFullYear()}${pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}T${pad(eventStart.getHours())}${pad(eventStart.getMinutes())}00Z`;
+
+                                  allEvents.push({
+                                      sourcePerson: source.defaultPerson,
+                                      summary: ev.summary || "Kein Titel",
+                                      start: startFormatted,
+                                      location: ev.location || "",
+                                      description: ev.description || ""
+                                  });
                               }
                           }
-                      });
+                      }
                   } catch (e) {
                       console.error("Fehler bei URL:", source.url, e);
                   }
               }
 
               fs.writeFileSync("calendar.json", JSON.stringify(allEvents, null, 2));
-              console.log("Gesamt gefundene Termine:", allEvents.length);
+              console.log("Gesamt gefundene Termine (inkl. Serien):", allEvents.length);
           }
           update();
           '
@@ -81,4 +87,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add calendar.json
-          git diff --staged --quiet || (git commit -m "Auto-update calendar.json with source mapping" && git push)
+          git diff --staged --quiet || (git commit -m "Auto-update calendar.json with expanded recurring events" && git push)
