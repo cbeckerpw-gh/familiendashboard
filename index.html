@@ -74,23 +74,24 @@
   <!-- 2. JETZT UNTEN: ENERGIEFLUSS & STROM-MONITOR -->
   <section class="energy-section" style="margin-top: 20px;">
     <div class="energy-header">
-      ⚡ Live-Energiefluss (Sungrow, Zappi &amp; Shelly)
+      ⚡ Live-Energiefluss (Sungrow &amp; Zappi)
+      <small id="energy-updated" style="font-weight: normal; float: right; font-size: 0.8em; opacity: 0.8;"></small>
     </div>
 
     <div class="energy-flow-grid">
       <div class="energy-card">
         <div class="energy-icon">☀️</div>
         <div class="energy-info">
-          <div class="label">Sungrow PV</div>
-          <div class="value" id="pv-val">6.4 kW</div>
+          <div class="label">PV-Leistung</div>
+          <div class="value" id="pv-val">-- kW</div>
         </div>
       </div>
 
       <div class="energy-card">
         <div class="energy-icon">🔋</div>
         <div class="energy-info">
-          <div class="label">Speicher</div>
-          <div class="value" id="battery-val">88% (1.8 kW)</div>
+          <div class="label">Speicher (SoC)</div>
+          <div class="value" id="battery-val">--% (-- kW)</div>
         </div>
       </div>
 
@@ -98,7 +99,7 @@
         <div class="energy-icon">🏠</div>
         <div class="energy-info">
           <div class="label">Hausverbrauch</div>
-          <div class="value" id="home-val">0.9 kW</div>
+          <div class="value" id="home-val">-- kW</div>
         </div>
       </div>
 
@@ -106,37 +107,17 @@
         <div class="energy-icon">🔌</div>
         <div class="energy-info">
           <div class="label">Zappi Wallbox</div>
-          <div class="value" id="zappi-val">3.7 kW (Eco+)</div>
+          <div class="value" id="zappi-val">-- kW</div>
         </div>
       </div>
 
       <div class="energy-card">
         <div class="energy-icon">🌐</div>
         <div class="energy-info">
-          <div class="label">Netzeinspeisung</div>
-          <div class="value" id="grid-val">0.0 kW</div>
+          <div class="label">Netz / Grid</div>
+          <div class="value" id="grid-val">-- kW</div>
         </div>
       </div>
-    </div>
-
-    <div class="flow-container">
-      <svg width="100%" height="100%" viewBox="0 0 800 120" preserveAspectRatio="none">
-        <path d="M 100,30 L 400,60" class="flow-line" />
-        <path d="M 400,60 L 700,30" class="flow-line" />
-        <path d="M 400,60 L 250,95" class="flow-line" />
-        <path d="M 400,60 L 550,95" class="flow-line" />
-
-        <path d="M 100,30 L 400,60" class="flow-line flow-particle" stroke="#f39c12" stroke-width="4" />
-        <path d="M 400,60 L 700,30" class="flow-line flow-particle" stroke="#9b59b6" stroke-width="4" />
-        <path d="M 400,60 L 250,95" class="flow-line flow-particle" stroke="#2ecc71" stroke-width="4" />
-        <path d="M 400,60 L 550,95" class="flow-line flow-particle" stroke="#3498db" stroke-width="4" />
-
-        <circle cx="100" cy="30" r="8" fill="#f39c12" />
-        <circle cx="400" cy="60" r="10" fill="#2c3e50" />
-        <circle cx="700" cy="30" r="8" fill="#9b59b6" />
-        <circle cx="250" cy="95" r="8" fill="#2ecc71" />
-        <circle cx="550" cy="95" r="8" fill="#3498db" />
-      </svg>
     </div>
 
     <div class="room-lights-grid">
