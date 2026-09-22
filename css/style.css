@@ -401,3 +401,27 @@
       flex-wrap: wrap;
     }
 
+    /* Styling für den manuellen Aktualisierungs-Button */
+    .refresh-btn {
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-left: 12px;
+        padding: 6px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s, transform 0.4s ease;
+        vertical-align: middle;
+    }
+    
+    .refresh-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .refresh-btn:active {
+        transform: scale(0.9);
+    }
+
