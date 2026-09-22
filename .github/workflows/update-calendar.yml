@@ -2,14 +2,14 @@ name: Kalender automatisch aktualisieren
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Läuft alle 6 Stunden automatisch
-  workflow_dispatch: # Erlaubt es dir, den Prozess jederzeit manuell per Klick zu starten!
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   update-calendar:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Wichtig, damit die Action die JSON-Datei speichern darf
+      contents: write
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
@@ -23,42 +23,57 @@ jobs:
         run: |
           node -e '
           const fs = require("fs");
-          async function update() {
-              const url = "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics";
-              console.log("Lade iCal Daten...");
+          async function fetchICal(url) {
               const res = await fetch(url);
-              const text = await res.text();
-              
-              // Unser bewährter Parser
-              const cleanedText = text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
-              const lines = cleanedText.split(/\r\n|\n|\r/);
-              let parsedEvents = [];
-              let currentEvent = null;
+              return await res.text();
+          }
 
-              lines.forEach(line => {
-                  if (line.startsWith("BEGIN:VEVENT")) {
-                      currentEvent = {};
-                  } else if (line.startsWith("END:VEVENT") && currentEvent) {
-                      if (currentEvent.summary && currentEvent.start) {
-                          parsedEvents.push(currentEvent);
-                      }
-                      currentEvent = null;
-                  } else if (currentEvent) {
-                      const colonIdx = line.indexOf(":");
-                      if (colonIdx !== -1) {
-                          let key = line.substring(0, colonIdx);
-                          if (key.includes(";")) key = key.split(";")[0];
-                          const val = line.substring(colonIdx + 1);
-                          if (key === "SUMMARY") currentEvent.summary = val;
-                          if (key === "DTSTART") currentEvent.start = val;
-                          if (key === "LOCATION") currentEvent.location = val;
-                          if (key === "DESCRIPTION") currentEvent.description = val;
-                      }
+          async function update() {
+              // Alle drei Kalender (Familie, Mama, Papa)
+              const urls = [
+                  "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics",
+                  "https://calendar.google.com/calendar/ical/s.fleher86%40googlemail.com/public/basic.ics",
+                  "https://calendar.google.com/calendar/ical/cbecker.pw%40googlemail.com/public/basic.ics"
+              ];
+
+              let allEvents = [];
+
+              for (const url of urls) {
+                  console.log("Lade iCal Daten von:", url);
+                  try {
+                      const text = await fetchICal(url);
+                      const cleanedText = text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
+                      const lines = cleanedText.split(/\r\n|\n|\r/);
+                      let currentEvent = null;
+
+                      lines.forEach(line => {
+                          if (line.startsWith("BEGIN:VEVENT")) {
+                              currentEvent = {};
+                          } else if (line.startsWith("END:VEVENT") && currentEvent) {
+                              if (currentEvent.summary && currentEvent.start) {
+                                  allEvents.push(currentEvent);
+                              }
+                              currentEvent = null;
+                          } else if (currentEvent) {
+                              const colonIdx = line.indexOf(":");
+                              if (colonIdx !== -1) {
+                                  let key = line.substring(0, colonIdx);
+                                  if (key.includes(";")) key = key.split(";")[0];
+                                  const val = line.substring(colonIdx + 1);
+                                  if (key === "SUMMARY") currentEvent.summary = val;
+                                  if (key === "DTSTART") currentEvent.start = val;
+                                  if (key === "LOCATION") currentEvent.location = val;
+                                  if (key === "DESCRIPTION") currentEvent.description = val;
+                              }
+                          }
+                      });
+                  } catch (e) {
+                      console.error("Fehler beim Laden von URL:", url, e);
                   }
-              });
+              }
 
-              fs.writeFileSync("calendar.json", JSON.stringify(parsedEvents, null, 2));
-              console.log("Erfolgreich! Gefundene Termine:", parsedEvents.length);
+              fs.writeFileSync("calendar.json", JSON.stringify(allEvents, null, 2));
+              console.log("Gesamt gefundene Termine aus allen Kalendern:", allEvents.length);
           }
           update();
           '
@@ -68,4 +83,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add calendar.json
-          git diff --staged --quiet || (git commit -m "Auto-update calendar.json" && git push)
+          git diff --staged --quiet || (git commit -m "Auto-update calendar.json from all family calendars" && git push)
