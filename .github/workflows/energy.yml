@@ -4,7 +4,10 @@ on:
   schedule:
     - cron: '*/15 * * * *' # Läuft alle 15 Minuten
   workflow_dispatch: # Erlaubt manuelles Starten in GitHub
-
+  
+permissions:
+  contents: write  # <--- Das hier muss hinzugefügt werden!
+  
 jobs:
   update-energy:
     runs-on: ubuntu-latest
