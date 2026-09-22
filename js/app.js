@@ -73,6 +73,10 @@ function processLoadedEvents(events) {
             person = 'papa';
             name = 'Papa';
             icon = '👨';
+        } else if (lowerTitle.includes('elternabend') || lowerTitle.includes('eltern')) {
+            person = 'familie';
+            name = 'Eltern';
+            icon = '👥';
         }
 
         const startStr = ev.start;
