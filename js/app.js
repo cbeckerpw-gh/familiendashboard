@@ -107,11 +107,15 @@ function processLoadedEvents(events) {
 
         let timeStr = 'Ganztägig';
         let rawTime = '00:00';
+        let hours = 0;
+        let minutes = 0;
+        let hasTime = false;
 
         if (startStr.includes('T')) {
             const timePart = startStr.split('T')[1];
-            let hours = parseInt(timePart.substring(0, 2), 10);
-            const minutes = timePart.substring(2, 4);
+            hours = parseInt(timePart.substring(0, 2), 10);
+            minutes = parseInt(timePart.substring(2, 4), 10);
+            hasTime = true;
 
             if (startStr.endsWith('Z')) {
                 hours += 2; // Sommerzeit MESZ Anpassung
@@ -119,8 +123,19 @@ function processLoadedEvents(events) {
             }
 
             const formattedHours = String(hours).padStart(2, '0');
-            rawTime = `${formattedHours}:${minutes}`;
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            rawTime = `${formattedHours}:${formattedMinutes}`;
             timeStr = `${rawTime} Uhr`;
+        }
+
+        // Prüfen, ob der Termin heute bereits vorbei ist
+        let isPast = false;
+        if (dayCategory === 'today' && hasTime) {
+            const now = new Date();
+            const eventEndCheck = new Date(year, month, day, hours, minutes);
+            if (eventEndCheck < now) {
+                isPast = true;
+            }
         }
 
         realEvents.push({
@@ -132,7 +147,8 @@ function processLoadedEvents(events) {
             location: ev.location || '',
             description: ev.description || '',
             time: timeStr,
-            rawTime: rawTime
+            rawTime: rawTime,
+            isPast: isPast
         });
     });
 
@@ -168,7 +184,7 @@ function renderEvents() {
 
 function createEventCard(ev) {
     const card = document.createElement('div');
-    card.className = `event-card ${ev.person}`;
+    card.className = `event-card ${ev.person} ${ev.isPast ? 'past' : ''}`;
     
     let speakString = `${ev.title}, ${ev.time}`;
     if (ev.location) speakString += `, Ort: ${ev.location}`;
