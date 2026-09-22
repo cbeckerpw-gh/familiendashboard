@@ -324,6 +324,17 @@
       gap: 5px;
     }
 
+    /* Styling für Eltern- / Familien-Termine */
+    .event-card.familie {
+        background-color: #f4ecdf; /* Ein ruhiger, warmer Ton */
+        border-left: 4px solid #b89768;
+    }
+    
+    .event-card.familie .event-person-badge {
+        background-color: #e6d5be;
+        color: #5c4a32;
+    }
+
     /* README MODAL */
     .modal-overlay {
       display: none;
