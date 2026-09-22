@@ -29,7 +29,6 @@ jobs:
           }
 
           async function update() {
-              // Hier definieren wir fest, welcher Kalender zu wem gehört
               const calendarSources = [
                   { url: "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics", defaultPerson: "familie" },
                   { url: "https://calendar.google.com/calendar/ical/s.fleher86%40googlemail.com/public/basic.ics", defaultPerson: "mama" },
@@ -39,7 +38,6 @@ jobs:
               let allEvents = [];
 
               for (const source of calendarSources) {
-                  console.log("Lade iCal Daten von:", source.url);
                   try {
                       const text = await fetchICal(source.url);
                       const cleanedText = text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
@@ -68,7 +66,7 @@ jobs:
                           }
                       });
                   } catch (e) {
-                      console.error("Fehler beim Laden von URL:", source.url, e);
+                      console.error("Fehler bei URL:", source.url, e);
                   }
               }
 
