@@ -237,21 +237,24 @@ async function loadEnergyData() {
         // 1. PV-Leistung
         document.getElementById('pv-val').innerText = `${data.pvPower} kW`;
 
-        // 2. Speicher mit Richtungspfeil (Grün laden / Blau entladen)
+        // 2. Speicher mit Logik (positive Werte = Laden/Grün, negative = Entladen/Blau)
         const batteryElem = document.getElementById('battery-val');
+        let batteryVal = data.batteryPower || 0;
         let batteryArrow = '';
         let batteryColor = '';
-        if (data.batteryPower > 0) {
-            batteryArrow = ' ↗'; // Lädt
-            batteryColor = '#2ecc71';
-        } else if (data.batteryPower < 0) {
-            batteryArrow = ' ↙'; // Entlädt
-            batteryColor = '#3498db';
+        
+        if (batteryVal > 0.05) {
+            batteryArrow = ' ↗ (Laden)';
+            batteryColor = '#2ecc71'; // Grün
+        } else if (batteryVal < -0.05) {
+            batteryArrow = ' ↘ (Entladen)';
+            batteryColor = '#3498db'; // Blau
         } else {
-            batteryArrow = ' ⏸';
+            batteryArrow = ' ⏸ (Standby)';
             batteryColor = 'inherit';
+            batteryVal = 0;
         }
-        batteryElem.innerHTML = `${data.batterySoc}% (<span style="color:${batteryColor}">${data.batteryPower >= 0 ? '+' : ''}${data.batteryPower} kW${batteryArrow}</span>)`;
+        batteryElem.innerHTML = `${data.batterySoc}% (<span style="color:${batteryColor}">${batteryVal > 0 ? '+' : ''}${batteryVal} kW${batteryArrow}</span>)`;
 
         // 3. Hausverbrauch
         document.getElementById('home-val').innerText = `${data.housePower} kW`;
@@ -259,14 +262,16 @@ async function loadEnergyData() {
         // 4. Zappi Wallbox
         document.getElementById('zappi-val').innerText = `${data.zappiPower} kW`;
         
-        // 5. Netz / Grid mit Pfeil (Rot/Orange Bezug, Grün Einspeisung)
+        // 5. Netz / Grid (positive Werte = Bezug, negative Werte = Einspeisung)
         const gridElem = document.getElementById('grid-val');
-        if (data.gridPower < 0) {
-            gridElem.innerHTML = `<span style="color:#2ecc71">Einspeisung: ${Math.abs(data.gridPower)} kW ↗</span>`;
-        } else if (data.gridPower > 0) {
-            gridElem.innerHTML = `<span style="color:#e67e22">Bezug: ${data.gridPower} kW ↙</span>`;
+        let gridVal = data.gridPower || 0;
+        
+        if (gridVal < -0.05) {
+            gridElem.innerHTML = `<span style="color:#2ecc71">Einspeisung: ${Math.abs(gridVal)} kW ↗</span>`;
+        } else if (gridVal > 0.05) {
+            gridElem.innerHTML = `<span style="color:#e67e22">Bezug: ${gridVal} kW ↙</span>`;
         } else {
-            gridElem.innerText = `0.0 kW (Neutral)`;
+            gridElem.innerHTML = `<span style="color:inherit">0.0 kW (Neutral)</span>`;
         }
 
         if (data.updatedAt) {
