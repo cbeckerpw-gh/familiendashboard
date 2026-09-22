@@ -335,6 +335,16 @@
         color: #5c4a32;
     }
 
+    .event-card.past {
+    opacity: 0.45;
+    filter: grayscale(30%);
+    transition: opacity 0.3s ease;
+    }
+    
+    .event-card.past:hover {
+        opacity: 0.9;
+        filter: grayscale(0%);
+    }
     /* README MODAL */
     .modal-overlay {
       display: none;
