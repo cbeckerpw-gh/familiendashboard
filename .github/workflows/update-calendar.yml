@@ -29,26 +29,26 @@ jobs:
           }
 
           async function update() {
-              // Alle drei Kalender (Familie, Mama, Papa)
-              const urls = [
-                  "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics",
-                  "https://calendar.google.com/calendar/ical/s.fleher86%40googlemail.com/public/basic.ics",
-                  "https://calendar.google.com/calendar/ical/cbecker.pw%40googlemail.com/public/basic.ics"
+              // Hier definieren wir fest, welcher Kalender zu wem gehört
+              const calendarSources = [
+                  { url: "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics", defaultPerson: "familie" },
+                  { url: "https://calendar.google.com/calendar/ical/s.fleher86%40googlemail.com/public/basic.ics", defaultPerson: "mama" },
+                  { url: "https://calendar.google.com/calendar/ical/cbecker.pw%40googlemail.com/public/basic.ics", defaultPerson: "papa" }
               ];
 
               let allEvents = [];
 
-              for (const url of urls) {
-                  console.log("Lade iCal Daten von:", url);
+              for (const source of calendarSources) {
+                  console.log("Lade iCal Daten von:", source.url);
                   try {
-                      const text = await fetchICal(url);
+                      const text = await fetchICal(source.url);
                       const cleanedText = text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
                       const lines = cleanedText.split(/\r\n|\n|\r/);
                       let currentEvent = null;
 
                       lines.forEach(line => {
                           if (line.startsWith("BEGIN:VEVENT")) {
-                              currentEvent = {};
+                              currentEvent = { sourcePerson: source.defaultPerson };
                           } else if (line.startsWith("END:VEVENT") && currentEvent) {
                               if (currentEvent.summary && currentEvent.start) {
                                   allEvents.push(currentEvent);
@@ -68,12 +68,12 @@ jobs:
                           }
                       });
                   } catch (e) {
-                      console.error("Fehler beim Laden von URL:", url, e);
+                      console.error("Fehler beim Laden von URL:", source.url, e);
                   }
               }
 
               fs.writeFileSync("calendar.json", JSON.stringify(allEvents, null, 2));
-              console.log("Gesamt gefundene Termine aus allen Kalendern:", allEvents.length);
+              console.log("Gesamt gefundene Termine:", allEvents.length);
           }
           update();
           '
@@ -83,4 +83,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add calendar.json
-          git diff --staged --quiet || (git commit -m "Auto-update calendar.json from all family calendars" && git push)
+          git diff --staged --quiet || (git commit -m "Auto-update calendar.json with source mapping" && git push)
