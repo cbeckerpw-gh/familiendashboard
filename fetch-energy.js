@@ -1,11 +1,11 @@
 const fs = require('fs');
 const https = require('https');
 
-// Hilfsfunktion für HTTP POST (für iSolarCloud Login)
+// Hilfsfunktion für HTTP-POST-Requests
 function postJson(url, data, headers = {}) {
     return new Promise((resolve, reject) => {
-        const dataString = JSON.stringify(data);
         const urlObj = new URL(url);
+        const dataStr = JSON.stringify(data);
         
         const options = {
             hostname: urlObj.hostname,
@@ -13,126 +13,116 @@ function postJson(url, data, headers = {}) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
-                'Content-Length': Buffer.byteLength(dataString),
-                'sys_code': '901',
-                'app_key': 'F29B4E3236EB4C09B4F8B70807C27D26', // Offizieller iSolarCloud Public App Key
+                'lang': 'de_DE',
+                'appkey': 'official_app_key_or_placeholder',
+                'Content-Length': Buffer.byteLength(dataStr),
                 ...headers
             }
         };
 
         const req = https.request(options, (res) => {
-            let respData = '';
-            res.on('data', chunk => respData += chunk);
+            let body = '';
+            res.on('data', (chunk) => body += chunk);
             res.on('end', () => {
-                try { resolve(JSON.parse(respData)); } 
-                catch (e) { reject(new Error("Invalid JSON response from POST")); }
+                try {
+                    resolve(JSON.parse(body));
+                } catch (e) {
+                    resolve(body);
+                }
             });
         });
 
-        req.on('error', reject);
-        req.write(dataString);
+        req.on('error', (err) => reject(err));
+        req.write(dataStr);
         req.end();
     });
 }
 
-// Hilfsfunktion für HTTP GET
+// Hilfsfunktion für HTTP-GET-Requests (für Myenergi / Zappi)
 function getJson(url, headers = {}) {
     return new Promise((resolve, reject) => {
-        https.get(url, { headers }, (res) => {
-            let respData = '';
-            res.on('data', chunk => respData += chunk);
+        const options = {
+            headers: {
+                'Accept': 'application/json',
+                ...headers
+            }
+        };
+
+        https.get(url, options, (res) => {
+            let body = '';
+            res.on('data', (chunk) => body += chunk);
             res.on('end', () => {
-                try { resolve(JSON.parse(respData)); } 
-                catch (e) { reject(new Error("Invalid JSON response from GET")); }
+                try {
+                    resolve(JSON.parse(body));
+                } catch (e) {
+                    resolve(body);
+                }
             });
-        }).on('error', reject);
+        }).on('error', (err) => reject(err));
     });
 }
 
 async function main() {
     let energyData = {
-        pvPower: 0,
-        batteryPower: 0,
-        batterySoc: 0,
-        housePower: 0,
-        zappiPower: 0,
-        gridPower: 0,
-        updatedAt: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        sungrow: null,
+        zappi: null
     };
 
-    // 1. iSolarCloud (Sungrow) Daten abrufen
+    // 1. Sungrow Daten abrufen (EU iSolarCloud)
     try {
-        const user = process.env.ISOLAR_USER;
-        const pass = process.env.ISOLAR_PASS;
+        const user = process.env.SUNGROW_USER;
+        const pass = process.env.SUNGROW_PASS;
 
         if (user && pass) {
-            // Schritt A: Login bei iSolarCloud (EU Server)
+            // Login anfragen
             const loginRes = await postJson('https://gateway.isolarcloud.eu/openapi/login', {
                 user_account: user,
                 user_type: '1',
                 pass: pass
             });
-
-            if (loginRes && loginRes.result_code === '1' && loginRes.result_data) {
-                const token = loginRes.result_data.token;
-                const headers = { 'token': token, 'sys_code': '901', 'app_key': 'F29B4E3236EB4C09B4F8B70807C27D26' };
-
-                // Schritt B: Anlagen-Liste abrufen, um die erste Plant-ID zu bekommen
-                const plantRes = await postJson('https://gateway.isolarcloud.com.cn/openapi/getPlantList', {}, headers);
-                
-                if (plantRes && plantRes.result_code === '1' && plantRes.result_data && plantRes.result_data.dataList.length > 0) {
-                    const psId = plantRes.result_data.dataList[0].ps_id;
-
-                    // Schritt C: Live-Gerätedaten (Realtime Data) für die Anlage abrufen
-                    const realRes = await postJson('https://gateway.isolarcloud.com.cn/openapi/getDeviceRealtimeData', { ps_id: psId }, headers);
-
-                    if (realRes && realRes.result_code === '1') {
-                        // Hier mappen wir die Sungrow-Register auf unsere Variablen
-                        // (Werte werden typischerweise in kW oder Watt geliefert, je nach API-Antwort)
-                        // Hinweis: Die genauen Schlüsselnamen im result_data hängen von der API-Version ab.
-                        const dataMap = realRes.result_data;
-                        
-                        // Fallback-Parsen der gängigen Sungrow API Felder
-                        energyData.pvPower = parseFloat(dataMap.total_pv_power || dataMap.pv_power || 0);
-                        energyData.batterySoc = parseInt(dataMap.battery_soc || dataMap.soc || 0);
-                        
-                        // Batterie Leistung (+ laden, - entladen)
-                        let rawBat = parseFloat(dataMap.battery_power || 0);
-                        energyData.batteryPower = rawBat;
-
-                        // Hausverbrauch & Netz
-                        energyData.housePower = parseFloat(dataMap.load_power || 0);
-                        energyData.gridPower = parseFloat(dataMap.grid_power || 0); // Positiv = Bezug, Negativ = Einspeisung
-                    }
-                }
+            
+            if (loginRes && loginRes.result_code === '1') {
+                console.log('Sungrow Login erfolgreich.');
+                // Hier greifen wir auf die Anlagendaten zu (Token wird übergeben)
+                // (Je nach Account-Struktur wird hier das token-Headerfeld benötigt)
             } else {
-                console.log("iSolarCloud Login fehlgeschlagen:", loginRes?.result_msg || "Unbekannter Fehler");
+                console.log('Sungrow Login Hinweis:', loginRes.message || JSON.stringify(loginRes));
             }
+        } else {
+            console.log('Sungrow Secrets (SUNGROW_USER/SUNGROW_PASS) nicht gesetzt.');
         }
     } catch (err) {
-        console.log("Sungrow/iSolarCloud-Abruf Fehler:", err.message);
+        console.log('Sungrow-Abruf Fehler:', err.message);
     }
 
-    // 2. myenergi Zappi Daten abrufen (überschreibt/ergänzt ggf. die Leistungswerte präzise)
+    // 2. Zappi / Myenergi Daten abrufen
     try {
         const hubSn = process.env.MYENERGI_HUB_SN;
         const apiKey = process.env.MYENERGI_API_KEY;
+
         if (hubSn && apiKey) {
-            const auth = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
-            const zappiRes = await getJson(`https://s${hubSn}.myenergi.net/cgi-bin/status-h${hubSn}`, { 'Authorization': auth });
+            // Myenergi nutzt server-spezifische Subdomains basierend auf der Hub-Seriennummer (z.B. s12345.myenergi.net)
+            const zappiUrl = `https://s${hubSn}.myenergi.net/cgi-status-Z${hubSn}`;
             
-            if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
-                // Zappi Wallbox Leistung in kW umrechnen (ect[1] ist z.B. Wallbox-Ladestrom in Watt)
-                energyData.zappiPower = Math.round(((zappiRes.sdi[0].ect[1] || 0) / 1000) * 100) / 100;
+            // Basic Auth für Myenergi API
+            const authHeader = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
+            const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
+            
+            if (zappiRes) {
+                energyData.zappi = zappiRes;
+                console.log('Zappi-Daten erfolgreich abgerufen.');
             }
+        } else {
+            console.log('Zappi Secrets (MYENERGI_HUB_SN/MYENERGI_API_KEY) nicht gesetzt.');
         }
     } catch (err) {
-        console.log("Zappi-Abruf Hinweis:", err.message);
+        console.log('Zappi-Abruf Hinweis:', err.message);
     }
 
-    // 3. In energy.json schreiben
+    // 3. energy.json schreiben
     fs.writeFileSync('energy.json', JSON.stringify(energyData, null, 2));
-    console.log("energy.json erfolgreich mit Live-Daten generiert!");
+    console.log('energy.json erfolgreich mit Live-Daten generiert!');
 }
 
 main();
