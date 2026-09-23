@@ -1,49 +1,5 @@
+const { chromium } = require('playwright');
 const fs = require('fs');
-const https = require('https');
-
-function getJson(url, headers = {}) {
-    return new Promise((resolve, reject) => {
-        https.get(url, { headers }, (res) => {
-            let body = '';
-            res.on('data', (chunk) => body += chunk);
-            res.on('end', () => {
-                try { resolve(JSON.parse(body)); } 
-                catch (e) { resolve(body); }
-            });
-        }).on('error', (err) => reject(err));
-    });
-}
-
-function postJson(url, data, headers = {}) {
-    return new Promise((resolve, reject) => {
-        const dataString = JSON.stringify(data);
-        const urlObj = new URL(url);
-        
-        const options = {
-            hostname: urlObj.hostname,
-            path: urlObj.pathname + urlObj.search,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                'appkey': 'B0455FBE7AA0328DB57B59AA729F05D8',
-                ...headers
-            }
-        };
-
-        const req = https.request(options, (res) => {
-            let body = '';
-            res.on('data', (chunk) => body += chunk);
-            res.on('end', () => {
-                try { resolve(JSON.parse(body)); } 
-                catch (e) { resolve(body); }
-            });
-        });
-
-        req.on('error', (err) => reject(err));
-        req.write(dataString);
-        req.end();
-    });
-}
 
 async function main() {
     let energyData = {
@@ -56,50 +12,60 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // --- 1. Zappi / Myenergi (Wartet auf Behebung des myenergi API-Problems) ---
+    // 1. Zappi / Myenergi (bleibt unverändert)
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
-
         if (apiKey) {
-            const zappiUrl = 'https://s20373960.myenergi.net/cgi-status-Z20373960';
+            const zappiUrl = `https://s${hubSn}.myenergi.net/cgi-status-Z${hubSn}`;
             const authHeader = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
-            
-            const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
-
+            const res = await fetch(zappiUrl, { headers: { 'Authorization': authHeader } });
+            const zappiRes = await res.json();
             if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
                 energyData.zappiPower = Math.round(((zappiRes.sdi[0].ect[1] || 0) / 1000) * 100) / 100;
             }
         }
     } catch (err) {
-        console.log('Zappi-Abruf pausiert/übersprungen (Server-Störung bei Myenergi).');
+        console.log('Zappi-Abruf übersprungen.');
     }
 
-    // --- 2. Sungrow iSolarCloud Daten abrufen ---
-    try {
-        const user = process.env.ISOLAR_USER;
-        const pass = process.env.ISOLAR_PASS;
+    // 2. Sungrow iSolarCloud via Playwright (Browser-Automatisierung)
+    const user = process.env.ISOLAR_USER;
+    const pass = process.env.ISOLAR_PASS;
 
-        if (user && pass) {
-            // Wir nutzen die Web-Portal Login URL statt der OpenAPI
-            const loginUrl = 'https://gateway.isolarcloud.eu/account/login';
-            const loginRes = await postJson(loginUrl, {
-                user_account: user,
-                user_pwd: pass,
-                appkey: 'B0455FBE7AA0328DB57B59AA729F05D8'
-            }, {
-                'sys_code': '901',
-                'app_key': 'B0455FBE7AA0328DB57B59AA729F05D8',
-                'lang': 'de_DE',
-                'os_type': 'web'
-            });
+    if (user && pass) {
+        console.r("Starte Headless-Browser für iSolarCloud...");
+        const browser = await chromium.launch({ headless: true });
+        const context = await browser.newContext();
+        const page = await context.newPage();
 
-            console.log("Sungrow Web-Login-Antwort erhalten:", JSON.stringify(loginRes));
-        } else {
-            console.log('Sungrow Zugangsdaten (ISOLAR_USER / ISOLAR_PASS) fehlen im Workflow.');
+        try {
+            // Zum iSolarCloud Portal navigieren
+            await page.goto('https://gateway.isolarcloud.eu', { waitUntil: 'networkidle' });
+
+            // Zugangsdaten eingeben (Selektoren ggf. anpassen, falls sich die Login-Maske unterscheidet)
+            // Wir suchen nach den Eingabefeldern für Benutzer und Passwort
+            await page.fill('input[type="text"], input[placeholder*="Konto"], input[placeholder*="User"]', user);
+            await page.fill('input[type="password"]', pass);
+
+            // Login-Button anklicken
+            await page.click('button:has-text("Anmelden"), button:has-text("Login"), .login-btn');
+
+            // Warten bis das Dashboard geladen ist
+            await page.waitForLoadState('networkidle');
+            console.log("Erfolgreich eingeloggt, lese Dashboard aus...");
+
+            // Hier können wir nun gezielt nach den Elementen auf dem Dashboard greifen
+            // (Beispiel: Auslesen von Textinhalten bestimmter CSS-Klassen deiner Anlage)
+            // energyData.pvPower = ...
+
+        } catch (err) {
+            console.log('Fehler bei der Browser-Automatisierung:', err.message);
+        } finally {
+            await browser.close();
         }
-    } catch (err) {
-        console.log('Sungrow-Abruf Fehler:', err.message);
+    } else {
+        console.log('Sungrow Zugangsdaten fehlen.');
     }
 
     fs.writeFileSync('energy.json', JSON.stringify(energyData, null, 2));
