@@ -37,11 +37,14 @@ async function main() {
             console.log("Versuche Zappi Abruf für URL:", zappiUrl);
             const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
             
+            // Komplette Rohdaten ins Log schreiben zur exakten Analyse
+            console.log("Zappi Rohdaten:", JSON.stringify(zappiRes, null, 2));
+
             if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
                 energyData.zappiPower = Math.round(((zappiRes.sdi[0].ect[1] || 0) / 1000) * 100) / 100;
                 console.log('Zappi-Daten erfolgreich abgerufen! Leistung:', energyData.zappiPower, 'kW');
             } else {
-                console.log('Zappi-Antwort erhalten, aber unerwartetes Format:', JSON.stringify(zappiRes));
+                console.log('Zappi-Antwort erhalten, aber unerwartetes Format.');
             }
         } else {
             console.log('MYENERGI_API_KEY Secret fehlt im Workflow.');
