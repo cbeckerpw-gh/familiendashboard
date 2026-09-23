@@ -12,7 +12,7 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Zappi / Myenergi (bleibt unverändert)
+    // 1. Zappi / Myenergi
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
@@ -29,7 +29,7 @@ async function main() {
         console.log('Zappi-Abruf übersprungen.');
     }
 
-    // 2. Sungrow iSolarCloud via Playwright (Browser-Automatisierung)
+    // 2. Sungrow iSolarCloud via Playwright
     const user = process.env.ISOLAR_USER;
     const pass = process.env.ISOLAR_PASS;
 
@@ -40,28 +40,29 @@ async function main() {
         const page = await context.newPage();
 
         try {
-            // Zum iSolarCloud Web-Portal navigieren
-            await page.goto('https://portaleu.isolarcloud.com', { waitUntil: 'domcontentloaded' });
+            // Auf das Portal gehen und warten bis das Netzwerk beruhigt ist (JavaScript geladen)
+            await page.goto('https://portaleu.isolarcloud.com', { waitUntil: 'networkidle', timeout: 60000 });
 
-            console.log("Warte auf Login-Felder...");
-            const userInputSelector = 'input[type="text"], input[type="email"], input';
-            await page.waitForSelector(userInputSelector, { timeout: 15000 });
+            console.log("Suche nach Login-Formular...");
+            
+            // Auf das Benutzerkonto-Eingabefeld warten (iSolarCloud nutzt oft spezifische Platzhalter oder Klassen)
+            const userInput = 'input[type="text"], input[type="account"], input[placeholder*="Konto"], input[placeholder*="Account"], input[placeholder*="Benutzer"]';
+            await page.waitForSelector(userInput, { timeout: 20000 });
 
-            // Benutzername und Passwort eingeben
-            await page.fill(userInputSelector, user);
+            await page.fill(userInput, user);
             await page.fill('input[type="password"]', pass);
 
-            // Login-Button anklicken
-            await page.click('button:has-text("Anmelden"), button:has-text("Login"), .el-button--primary');
+            // Auf Anmelden-Button klicken
+            await page.click('button:has-text("Anmelden"), button:has-text("Login"), .login-btn-class');
 
-            // Warten bis nach dem Login das Dashboard erreicht ist
+            // Warten bis das Dashboard erscheint
             await page.waitForLoadState('networkidle');
-            console.log("Erfolgreich eingeloggt, lese Dashboard aus...");
-
-            // Hier bauen wir im nächsten Schritt die Auslese-Logik für deine Leistungsdaten ein
+            console.log("Erfolgreich eingeloggt!");
 
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
+            // Speichere einen Screenshot bei Fehler, um im GitHub Artifact zu sehen, wo er festhängt
+            await page.screenshot({ path: 'error-screenshot.png', fullPage: true });
         } finally {
             await browser.close();
         }
