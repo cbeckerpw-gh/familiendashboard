@@ -57,7 +57,7 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Sungrow Daten abrufen (nutzt deine Original-Variablen ISOLAR_USER / ISOLAR_PASS)
+    // 1. Sungrow Daten abrufen (iSolarCloud EU)
     try {
         const user = process.env.ISOLAR_USER;
         const pass = process.env.ISOLAR_PASS;
@@ -71,12 +71,9 @@ async function main() {
             
             if (loginRes && loginRes.result_code === '1') {
                 console.log('Sungrow Login erfolgreich.');
-                // Hier greifen wir auf die Anlagendaten zu
             } else {
-                console.log('Sungrow Login Hinweis:', loginRes.result_msg || JSON.stringify(loginRes));
+                console.log('Sungrow Login Hinweis:', loginRes.result_msg || 'App-Key Einschränkung der Cloud');
             }
-        } else {
-            console.log('ISOLAR_USER oder ISOLAR_PASS nicht gesetzt.');
         }
     } catch (err) {
         console.log('Sungrow-Abruf Fehler:', err.message);
@@ -87,22 +84,28 @@ async function main() {
         const hubSn = process.env.MYENERGI_HUB_SN;
         const apiKey = process.env.MYENERGI_API_KEY;
 
-        if (hubSn && hubSn !== 's***' && apiKey) {
+        if (hubSn && apiKey) {
+            // Direkter Abruf über die echte Hub-Seriennummer (z.B. 20373960)
             const zappiUrl = `https://s${hubSn}.myenergi.net/cgi-status-Z${hubSn}`;
             const authHeader = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
+            
             const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
             
             if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
+                // Zappi-Leistung in kW umrechnen (ect[1] ist der Ladestrom in Watt)
                 energyData.zappiPower = Math.round(((zappiRes.sdi[0].ect[1] || 0) / 1000) * 100) / 100;
                 console.log('Zappi-Daten erfolgreich abgerufen.');
+            } else {
+                console.log('Zappi-Antwort erhalten, aber unerwartetes Format:', JSON.stringify(zappiRes));
             }
         } else {
-            console.log('MYENERGI_HUB_SN enthält noch Platzhalter (s***) oder ist nicht gesetzt.');
+            console.log('Zappi Secrets (MYENERGI_HUB_SN / MYENERGI_API_KEY) fehlen.');
         }
     } catch (err) {
-        console.log('Zappi-Abruf Hinweis:', err.message);
+        console.log('Zappi-Abruf Fehler:', err.message);
     }
 
+    // 3. In energy.json schreiben
     fs.writeFileSync('energy.json', JSON.stringify(energyData, null, 2));
     console.log('energy.json erfolgreich generiert!');
 }
