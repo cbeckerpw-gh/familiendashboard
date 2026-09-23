@@ -10,30 +10,31 @@
 <body>
 
   <!-- HEADER MIT LEGENDE -->
-  <header class="header-clean">
-  <div class="header-main-group">
-    <div class="header-icon-box">🏠</div>
-    <div class="header-titles">
-      <h1>Haus & Terminübersicht</h1>
-      <span class="header-subtitle">Smart Home & Familienkalender</span>
+  <header>
+    <!-- Linke Seite: Titel, Icon & Refresh-Button direkt zusammen -->
+    <div class="header-left-group">
+      <div class="header-title-container">
+        <span style="font-size: 1.6rem;">🏠</span>
+        <h1>Haus und Terminübersicht</h1>
+      </div>
+      <button class="refresh-btn" onclick="triggerRefresh()" title="Daten aktualisieren">🔄</button>
     </div>
-    <button class="refresh-btn" onclick="triggerRefresh()" title="Daten aktualisieren">🔄</button>
-  </div>
 
-  <div class="header-right-group">
-    <div class="family-legend">
-      <div class="legend-item eltern"><span class="legend-avatar">👥</span> Eltern</div>
-      <div class="legend-item oskar"><span class="legend-avatar">👦</span> Oskar</div>
-      <div class="legend-item irma"><span class="legend-avatar">👧</span> Irma</div>
-      <div class="legend-item mama"><span class="legend-avatar">👩</span> Mama</div>
-      <div class="legend-item papa"><span class="legend-avatar">👨</span> Papa</div>
+    <!-- Rechte Seite: Legende & Doku-Button -->
+    <div class="header-right-group">
+      <div class="family-legend">
+        <div class="legend-item eltern"><span class="legend-avatar">👥</span> Eltern</div>
+        <div class="legend-item oskar"><span class="legend-avatar">👦</span> Oskar</div>
+        <div class="legend-item irma"><span class="legend-avatar">👧</span> Irma</div>
+        <div class="legend-item mama"><span class="legend-avatar">👩</span> Mama</div>
+        <div class="legend-item papa"><span class="legend-avatar">👨</span> Papa</div>
+      </div>
+      
+      <button class="btn-readme" onclick="openReadme()">
+        📖 <span>Lissmich & Dokumentation</span>
+      </button>
     </div>
-    
-    <button class="btn-readme" onclick="openReadme()">
-      📖 <span>Doku</span>
-    </button>
-  </div>
-</header>
+  </header>
 
   <!-- 1. JETZT OBEN: 3-TAGE KALENDER BOARD -->
   <main class="calendar-board">
