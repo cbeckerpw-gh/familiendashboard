@@ -67,7 +67,7 @@ async function main() {
 
         if (user && pass) {
             // Schritt A: Login bei iSolarCloud (EU Server)
-            const loginRes = await postJson('https://gateway.isolarcloud.com.cn/openapi/login', {
+            const loginRes = await postJson('https://gateway.isolarcloud.eu/openapi/login', {
                 user_account: user,
                 user_type: '1',
                 pass: pass
