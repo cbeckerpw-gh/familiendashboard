@@ -81,14 +81,20 @@ async function main() {
         const pass = process.env.ISOLAR_PASS;
 
         if (user && pass) {
-            const loginUrl = 'https://gateway.isolarcloud.eu/openapi/login';
+            // Wir nutzen die Web-Portal Login URL statt der OpenAPI
+            const loginUrl = 'https://gateway.isolarcloud.eu/account/login';
             const loginRes = await postJson(loginUrl, {
                 user_account: user,
-                user_pwd: pass
+                user_pwd: pass,
+                appkey: 'B0455FBE7AA0328DB57B59AA729F05D8'
+            }, {
+                'sys_code': '901',
+                'app_key': 'B0455FBE7AA0328DB57B59AA729F05D8',
+                'lang': 'de_DE',
+                'os_type': 'web'
             });
 
-            console.log("Sungrow Login-Antwort erhalten:", JSON.stringify(loginRes));
-            // Hier werten wir im nächsten Schritt die Gerätedaten aus, sobald der Login durchgeht
+            console.log("Sungrow Web-Login-Antwort erhalten:", JSON.stringify(loginRes));
         } else {
             console.log('Sungrow Zugangsdaten (ISOLAR_USER / ISOLAR_PASS) fehlen im Workflow.');
         }
