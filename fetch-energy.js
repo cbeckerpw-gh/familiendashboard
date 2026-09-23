@@ -29,7 +29,7 @@ async function main() {
         console.log('Zappi-Abruf übersprungen.');
     }
 
-    // 2. Sungrow iSolarCloud via Playwright
+    // 2. Sungrow iSolarCloud via Playwright & SVG Text Parsing
     const user = process.env.ISOLAR_USER;
     const pass = process.env.ISOLAR_PASS;
 
@@ -59,34 +59,36 @@ async function main() {
             await page.fill('input[type="password"]', pass);
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Zur Anlagenübersicht und Klick auf Anlage
             await page.waitForURL('**/plantList**', { timeout: 20000 });
             await page.click('text=Christian Becker');
 
-            // Warten bis das Dashboard und die Leistungsdaten geladen sind
-            await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
-            await page.waitForTimeout(6000);
+            // Warten bis das Dashboard und das SVG-Energieflussbild geladen sind
+            await page.waitForSelector('.overview, canvas, svg', { timeout: 15000 });
+            await page.waitForTimeout(6000); // Puffer für Live-Daten
 
-            // Werte direkt aus den Elementen des Energieflussbildes extrahieren
+            // Alle Texte (inklusive SVG tspan/text Knoten) einsammeln und parsen
             const parsedData = await page.evaluate(() => {
+                let texts = [];
+                // Greift alle Standard-DOM-Elemente UND SVG-Texte ab
+                document.querySelectorAll('span, div, tspan, text').forEach(el => {
+                    let txt = el.textContent.trim();
+                    if (txt) texts.push(txt);
+                });
+
                 let powers = [];
                 let socVal = 100;
 
-                const elements = document.querySelectorAll('*');
-                elements.forEach(el => {
-                    if (el.children.length === 0) {
-                        let txt = el.textContent.trim();
-                        if (/^\d+([.,]\d+)?\s*(kW|W)$/i.test(txt)) {
-                            powers.push(txt);
-                        }
-                        if (/^\d+\s*%$/.test(txt)) {
-                            let parsedSoc = parseInt(txt);
-                            if (!isNaN(parsedSoc) && parsedSoc <= 100) {
-                                socVal = parsedSoc;
-                            }
-                        }
+                for (let t of texts) {
+                    // Filter für Leistungswerte wie "3.7 kW", "450 W", "0 W"
+                    if (/^\d+([.,]\d+)?\s*(kW|W)$/i.test(t)) {
+                        powers.push(t);
                     }
-                });
+                    // Filter für Batterie SoC wie "100%"
+                    if (/^\d+\s*%$/.test(t)) {
+                        let val = parseInt(t);
+                        if (!isNaN(val) && val <= 100) socVal = val;
+                    }
+                }
 
                 function toNumber(str) {
                     if (!str) return 0;
@@ -105,11 +107,11 @@ async function main() {
                     house: powers.length > 2 ? toNumber(powers[2]) : 0,
                     grid: powers.length > 3 ? toNumber(powers[3]) : 0,
                     soc: socVal,
-                    rawPowers: powers
+                    allPowersFound: powers
                 };
             });
 
-            console.log("Gefundene Rohwerte:", parsedData.rawPowers);
+            console.log("Erkannte Leistungswerte:", parsedData.allPowersFound);
 
             energyData.pvPower = parsedData.pv;
             energyData.batteryPower = parsedData.battery;
