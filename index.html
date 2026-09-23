@@ -10,39 +10,30 @@
 <body>
 
   <!-- HEADER MIT LEGENDE -->
-  <header>
-    <div class="header-title-container">
-      <h1>🏡 Haus und Terminübersicht 👨‍👩‍👧‍👦</h1>
-      <button onclick="refreshDashboard()" title="Daten aktualisieren" class="refresh-btn">🔄</button>
+  <header class="header-clean">
+  <div class="header-main-group">
+    <div class="header-icon-box">🏠</div>
+    <div class="header-titles">
+      <h1>Haus & Terminübersicht</h1>
+      <span class="header-subtitle">Smart Home & Familienkalender</span>
     </div>
+    <button class="refresh-btn" onclick="triggerRefresh()" title="Daten aktualisieren">🔄</button>
+  </div>
 
+  <div class="header-right-group">
     <div class="family-legend">
-      <div class="legend-item familie">
-        <span class="legend-avatar">👫</span>
-        <span>Eltern</span>
-      </div>
-      <div class="legend-item oskar">
-        <span class="legend-avatar">👦</span>
-        <span>Oskar</span>
-      </div>
-      <div class="legend-item irma">
-        <span class="legend-avatar">👧</span>
-        <span>Irma</span>
-      </div>
-      <div class="legend-item mama">
-        <span class="legend-avatar">👩</span>
-        <span>Mama</span>
-      </div>
-      <div class="legend-item papa">
-        <span class="legend-avatar">👨</span>
-        <span>Papa</span>
-      </div>
+      <div class="legend-item eltern"><span class="legend-avatar">👥</span> Eltern</div>
+      <div class="legend-item oskar"><span class="legend-avatar">👦</span> Oskar</div>
+      <div class="legend-item irma"><span class="legend-avatar">👧</span> Irma</div>
+      <div class="legend-item mama"><span class="legend-avatar">👩</span> Mama</div>
+      <div class="legend-item papa"><span class="legend-avatar">👨</span> Papa</div>
     </div>
-
-    <button class="btn-readme" onclick="toggleReadme()">
-      <span>📖</span> Lissmich &amp; Dokumentation
+    
+    <button class="btn-readme" onclick="openReadme()">
+      📖 <span>Doku</span>
     </button>
-  </header>
+  </div>
+</header>
 
   <!-- 1. JETZT OBEN: 3-TAGE KALENDER BOARD -->
   <main class="calendar-board">
