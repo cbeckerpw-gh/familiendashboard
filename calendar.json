@@ -42,10 +42,10 @@
     "description": ""
   },
   {
-    "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
-    "start": "20260930T000000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
+    "sourcePerson": "mama",
+    "summary": "Elternabend, Irma, Kindergarten",
+    "start": "20260922T160000Z",
+    "location": "",
     "description": ""
   },
   {
@@ -53,6 +53,13 @@
     "summary": "Geburtstag: Heinz - Gerd Becker",
     "start": "20261001T000000Z",
     "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Sabine Koch Geburtstag",
+    "start": "20260930T000000Z",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": ""
   },
   {
@@ -71,15 +78,15 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Test papa",
-    "start": "20260922T090000Z",
+    "summary": "HO",
+    "start": "20261007T000000Z",
     "location": "",
     "description": ""
   },
   {
     "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "20261007T000000Z",
+    "summary": "Test papa",
+    "start": "20260922T090000Z",
     "location": "",
     "description": ""
   }
