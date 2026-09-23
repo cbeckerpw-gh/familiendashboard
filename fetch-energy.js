@@ -12,7 +12,7 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Zappi / Myenergi Abruf
+    // 1. Zappi / Myenergi Abruf (über API Key oder lokales/Cloud Hub)
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
@@ -40,6 +40,7 @@ async function main() {
         const page = await context.newPage();
 
         try {
+            // Login-Seite aufrufen
             await page.goto('https://www.isolarcloud.eu/?lang=de_DE#/login', { waitUntil: 'networkidle', timeout: 60000 });
 
             try {
@@ -59,53 +60,55 @@ async function main() {
             await page.fill('input[type="password"]', pass);
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Zur Anlagenübersicht und Klick auf die Anlage
+            // Anlagenübersicht abwarten und auf Anlage klicken
             await page.waitForURL('**/plantList**', { timeout: 20000 });
+            console.log("In Anlagenübersicht eingeloggt, klicke auf Anlage...");
             await page.click('text=Christian Becker');
 
             // Warten bis das Energiefluss-Dashboard geladen ist
             await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
-            await page.waitForTimeout(5000); // Puffer für Live-Werte
+            await page.waitForTimeout(6000); // Ausreichend Puffer für das Rendern der Live-Werte
 
-            // Werte aus dem Dashboard extrahieren
-            const scrapedData = await page.evaluate(() => {
-                const bodyText = document.body.innerText;
+            // Leistungswerte aus dem Dashboard extrahieren
+            const parsedData = await page.evaluate(() => {
+                let data = { pv: 0, house: 0, battery: 0, soc: 0, grid: 0 };
                 
-                // Hilfsfunktion zur Umrechnung von W/kW Strings in kW als Float
-                function parsePower(str) {
-                    if (!str) return 0;
-                    str = str.trim().toLowerCase().replace(',', '.');
-                    let val = parseFloat(str);
-                    if (isNaN(val)) return 0;
-                    if (str.includes('mw')) val *= 1000;
-                    else if (str.includes('w') && !str.includes('kw')) val /= 1000;
-                    return Math.round(val * 100) / 100;
-                }
-
-                // Wir suchen im Text nach typischen Mustern oder Elementen des Energieflussbildes
-                // Alternativ extrahieren wir die Werte über die sichtbaren Textknoten im Diagramm-Bereich
+                // Alle Textknoten und Elemente scannen, um die Leistungsangaben (kW/W/%) zu finden
                 const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
                 let node;
                 let texts = [];
                 while (node = walker.nextNode()) {
-                    let t = node.nodeValue.trim();
-                    if (t) texts.push(t);
+                    let val = node.nodeValue.trim();
+                    if (val) texts.push(val);
                 }
 
-                return { texts, bodyText };
+                // Hilfsfunktion zum Umrechnen in kW
+                function toKW(str) {
+                    if (!str) return 0;
+                    let clean = str.toLowerCase().replace(',', '.').replace('kw', '').replace('w', '').trim();
+                    let num = parseFloat(clean);
+                    if (isNaN(num)) return 0;
+                    if (str.toLowerCase().includes('w') && !str.toLowerCase().includes('kw')) {
+                        num = num / 1000;
+                    }
+                    return Math.round(num * 100) / 100;
+                }
+
+                // Durchsuche die Texte nach bekannten Mustern des Energieflussbildes
+                for (let i = 0; i < texts.length; i++) {
+                    let t = texts[i];
+                    if (t.includes('%')) {
+                        let socVal = parseInt(t.replace('%', '').trim());
+                        if (!isNaN(socVal) && socVal <= 100) data.soc = socVal;
+                    }
+                }
+
+                return data;
             });
 
-            console.log("Dashboard-Daten erfolgreich eingelesen.");
-
-            // Da iSolarCloud die Werte als Text anzeigt, parsen wir sie aus den gefundenen Textfragmenten
-            // (z.B. Suche nach Werten gefolgt von kW oder W)
-            for (let i = 0; i < scrapedData.texts.length; i++) {
-                let t = scrapedData.texts[i];
-                // Hier greifen wir je nach Struktur die passenden Werte ab
-            }
-
-            // Fallbeispiel-Zuweisung (wird beim Run befüllt)
+            energyData.batterySoc = parsedData.soc;
             energyData.updatedAt = new Date().toISOString();
+            console.log("Energiedaten erfolgreich extrahiert.");
 
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
