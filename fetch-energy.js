@@ -40,28 +40,38 @@ async function main() {
         const page = await context.newPage();
 
         try {
-            // Auf das Portal gehen und warten bis das Netzwerk beruhigt ist (JavaScript geladen)
-            await page.goto('https://portaleu.isolarcloud.com', { waitUntil: 'networkidle', timeout: 60000 });
+            // Exakte Login-URL aufrufen
+            await page.goto('https://www.isolarcloud.eu/?lang=de_DE#/login', { waitUntil: 'networkidle', timeout: 60000 });
 
-            console.log("Suche nach Login-Formular...");
+            // Cookie-Banner akzeptieren, falls vorhanden
+            try {
+                const cookieBtn = 'button:has-text("Yes, I agree"), button:has-text("Zustimmen")';
+                await page.click(cookieBtn, { timeout: 5000 });
+                console.log("Cookie-Banner bestätigt.");
+            } catch (e) {
+                console.log("Kein Cookie-Banner gefunden oder bereits ausgeblendet.");
+            }
+
+            console.log("Warte auf Login-Maske...");
             
-            // Auf das Benutzerkonto-Eingabefeld warten (iSolarCloud nutzt oft spezifische Platzhalter oder Klassen)
-            const userInput = 'input[type="text"], input[type="account"], input[placeholder*="Konto"], input[placeholder*="Account"], input[placeholder*="Benutzer"]';
-            await page.waitForSelector(userInput, { timeout: 20000 });
+            // Spezifische Felder aus dem Screenshot ansprechen (placeholder="Account" und placeholder="Password")
+            const userInput = 'input[placeholder="Account"], input[placeholder="Konto"], input[type="text"]';
+            await page.waitForSelector(userInput, { timeout: 15000 });
 
             await page.fill(userInput, user);
-            await page.fill('input[type="password"]', pass);
+            await page.fill('input[placeholder="Password"], input[placeholder="Passwort"], input[type="password"]', pass);
 
-            // Auf Anmelden-Button klicken
-            await page.click('button:has-text("Anmelden"), button:has-text("Login"), .login-btn-class');
+            // Auf den orangefarbenen Login-Button klicken
+            await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Warten bis das Dashboard erscheint
+            // Warten bis das Dashboard nach dem Login geladen ist
             await page.waitForLoadState('networkidle');
             console.log("Erfolgreich eingeloggt!");
 
+            // Hier bauen wir im nächsten Schritt das Auslesen der Energiedaten ein
+
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
-            // Speichere einen Screenshot bei Fehler, um im GitHub Artifact zu sehen, wo er festhängt
             await page.screenshot({ path: 'error-screenshot.png', fullPage: true });
         } finally {
             await browser.close();
