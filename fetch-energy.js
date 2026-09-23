@@ -25,19 +25,19 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // Zappi / Myenergi Daten direkt mit fester Seriennummer 20373960 abrufen
+    // Zappi / Myenergi direkt mit der festen URL ansprechen
     try {
-        const hubSn = '20373960';
         const apiKey = process.env.MYENERGI_API_KEY;
+        const hubSn = '20373960';
 
         if (apiKey) {
-            const zappiUrl = `https://s${hubSn}.myenergi.net/cgi-status-Z${hubSn}`;
+            // Direkt die finale URL ohne Variablen-Risiko zusammenbauen
+            const zappiUrl = 'https://s20373960.myenergi.net/cgi-status-Z20373960';
             const authHeader = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
             
             console.log("Versuche Zappi Abruf für URL:", zappiUrl);
             const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
             
-            // Komplette Rohdaten ins Log schreiben zur exakten Analyse
             console.log("Zappi Rohdaten:", JSON.stringify(zappiRes, null, 2));
 
             if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
