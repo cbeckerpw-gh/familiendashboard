@@ -267,18 +267,18 @@ async function loadEnergyData() {
         // 4. Zappi Wallbox
         document.getElementById('zappi-val').innerText = `${data.zappiPower} kW`;
         
-        // 5. Netz / Grid (positive Werte = Bezug, negative Werte = Einspeisung)
+        
+        // 5. Netz / Grid (Vorzeichen umgedreht: positiv = Einspeisung, negativ = Bezug)
         const gridElem = document.getElementById('grid-val');
         let gridVal = data.gridPower || 0;
         
-        if (gridVal < -0.05) {
-            gridElem.innerHTML = `<span style="color:#2ecc71">Einspeisung: ${Math.abs(gridVal)} kW ↗</span>`;
-        } else if (gridVal > 0.05) {
-            gridElem.innerHTML = `<span style="color:#e67e22">Bezug: ${gridVal} kW ↙</span>`;
+        if (gridVal > 0.05) {
+            gridElem.innerHTML = `<span style="color:#2ecc71">Einspeisung: ${gridVal} kW ↗</span>`;
+        } else if (gridVal < -0.05) {
+            gridElem.innerHTML = `<span style="color:#e67e22">Bezug: ${Math.abs(gridVal)} kW ↙</span>`;
         } else {
             gridElem.innerHTML = `<span style="color:inherit">0.0 kW (Neutral)</span>`;
         }
-
         if (data.updatedAt) {
             const updateTime = new Date(data.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
             document.getElementById('energy-updated').innerText = `Stand: ${updateTime} Uhr`;
