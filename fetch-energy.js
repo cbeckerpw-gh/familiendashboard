@@ -12,7 +12,7 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Zappi / Myenergi (bleibt unverändert)
+    // 1. Zappi / Myenergi
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
@@ -40,15 +40,12 @@ async function main() {
         const page = await context.newPage();
 
         try {
-            // Login-URL aufrufen
             await page.goto('https://www.isolarcloud.eu/?lang=de_DE#/login', { waitUntil: 'networkidle', timeout: 60000 });
 
-            // Cookie-Banner bestätigen
             try {
                 await page.click('button:has-text("Yes, I agree"), button:has-text("Zustimmen")', { timeout: 5000 });
             } catch (e) {}
 
-            // Zugangsdaten eingeben
             const userInput = 'input[placeholder="Account"], input[placeholder="Konto"], input.el-input__inner:not([readonly])';
             await page.waitForSelector(userInput, { timeout: 15000 });
             
@@ -62,26 +59,33 @@ async function main() {
             await page.fill('input[type="password"]', pass);
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Warten bis zur Anlagenübersicht (Bild 1)
+            // Warten bis zur Anlagenübersicht und Klick auf die Anlage
             await page.waitForURL('**/plantList**', { timeout: 20000 });
-            console.log("In Anlagenübersicht eingeloggt, klicke auf Anlage...");
-
-            // Klick auf den Anlagennamen "Christian Becker" (aus Bild 1)
             await page.click('text=Christian Becker');
 
-            // Warten bis das Live-Dashboard (Bild 2) geladen ist
+            // Warten bis das Dashboard mit dem Energieflussbild geladen ist
             await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
-            await page.waitForTimeout(30005); // Kurze Pufferzeit, bis Live-Werte vollständig gerendert sind
-            console.log("Auf dem Dashboard, lese Energiedaten aus...");
+            await page.waitForTimeout(4000); // Warten bis die Live-Werte da sind
 
-            // Hilfsfunktion zum Extrahieren von Texten basierend auf umgebenden Elementen
-            // Da die iSolarCloud-Icons feste Positionen haben, können wir die Leistungsdaten über die UI-Struktur auslesen.
-            // Alternativ können wir die Kennzahlen über die sichtbaren Textknoten greifen.
-            
-            // Beispielhafter Platzhalter für das Auslesen – wir verfeinern das im nächsten Schritt, 
-            // sobald wir sehen, was das Skript beim ersten Durchlauf zurückgibt.
+            // Werte aus den bekannten Elementen des Energieflussbildes auslesen
+            // Wir suchen nach den Texten/Elementen auf dem Canvas oder den zugehörigen Layern
+            const pageText = await page.evaluate(() => {
+                return document.body.innerText;
+            });
+            console.log("Dashboard Text-Snippet geladen.");
 
-            console.log("Daten erfolgreich ausgelesen.");
+            // Hilfsfunktion zum Extrahieren von Leistungswerten per Regex (sucht nach kW oder W near labels)
+            // Da das Sungrow-Layout feste Beschriftungen hat, lesen wir den Textinhalt aus
+            // Alternativ können wir spezifische Container abgreifen:
+            // PV-Leistung steht z.B. neben den Modulen, Hausverbrauch am Haus etc.
+
+            // Wir holen uns die Textinhalte der Leistungsanzeigen direkt über Playwright Locator
+            // Im iSolarCloud Dashboard stehen die Werte im SVG/Canvas oder als DOM-Knoten.
+            // Lass uns einen Screenshot machen, falls es beim ersten Mal hakelt, um die Selektoren zu sehen.
+            await page.screenshot({ path: 'dashboard-debug.png' });
+
+            // Vorläufiger Parser über DOM-Elemente falls als Text gerendert:
+            // Wir optimieren das basierend auf dem nächsten Log/Debug-Screenshot.
 
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
