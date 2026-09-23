@@ -1,5 +1,5 @@
 const fs = require('fs');
-const https = https = require('https');
+const https = require('https');
 
 function getJson(url, headers = {}) {
     return new Promise((resolve, reject) => {
