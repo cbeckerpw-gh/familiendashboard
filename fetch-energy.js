@@ -5,7 +5,7 @@ async function main() {
     let energyData = {
         pvPower: 0,
         batteryPower: 0,
-        batterySoc: 0,
+        batterySoc: 100,
         housePower: 0,
         zappiPower: 0,
         gridPower: 0,
@@ -59,46 +59,70 @@ async function main() {
             await page.fill('input[type="password"]', pass);
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Anlagenübersicht und Klick auf Anlage
+            // Zur Anlagenübersicht und Klick auf Anlage
             await page.waitForURL('**/plantList**', { timeout: 20000 });
             await page.click('text=Christian Becker');
 
-            // Warten bis das Dashboard geladen ist
+            // Warten bis das Dashboard und die Leistungsdaten geladen sind
             await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
             await page.waitForTimeout(6000);
 
-            // Werte aus dem iSolarCloud Dashboard extrahieren
+            // Werte direkt aus den Elementen des Energieflussbildes extrahieren
             const parsedData = await page.evaluate(() => {
-                let data = { pv: 0, house: 0, batteryPower: 0, soc: 100, grid: 0 };
-                
-                // Hilfsfunktion zum Parsen von Leistungswerten (kW / W)
-                function parsePowerVal(text) {
-                    if (!text) return 0;
-                    let clean = text.toLowerCase().replace(',', '.');
+                let powers = [];
+                let socVal = 100;
+
+                // Alle Elemente ohne Kinder durchgehen, die Leistung oder Prozent enthalten
+                const elements = document.querySelectorAll('*');
+                elements.forEach(el => {
+                    if (el.children.length === 0) {
+                        let txt = el.textContent.trim();
+                        // Prüfen ob es ein Leistungswert ist (z.B. "3.7 kW", "450 W")
+                        if (/^\d+([.,]\d+)?\s*(kW|W)$/i.test(txt)) {
+                            powers.push(txt);
+                        }
+                        // Prüfen auf SoC (z.B. "100%")
+                        if (/^\d+\s*%$/.test(txt)) {
+                            let parsedSoc = parseInt(txt);
+                            if (!isNaN(parsedSoc) && parsedSoc <= 100) {
+                                socVal = parsedSoc;
+                            }
+                        }
+                    }
+                });
+
+                function toNumber(str) {
+                    if (!str) return 0;
+                    let clean = str.toLowerCase().replace(',', '.').replace('kw', '').replace('w', '').trim();
                     let num = parseFloat(clean);
                     if (isNaN(num)) return 0;
-                    if (clean.includes('w') && !clean.includes('kw')) {
+                    if (str.toLowerCase().includes('w') && !str.toLowerCase().includes('kw')) {
                         num = num / 1000;
                     }
                     return Math.round(num * 100) / 100;
                 }
 
-                // Wir durchsuchen alle Elemente, die Leistungsangaben enthalten könnten
-                const allElements = document.querySelectorAll('span, div, text');
-                allElements.forEach(el => {
-                    let txt = el.textContent.trim();
-                    // Suche nach SoC Wert (%)
-                    if (txt.endsWith('%')) {
-                        let val = parseInt(txt.replace('%', '').trim());
-                        if (!isNaN(val) && val <= 100) data.soc = val;
-                    }
-                });
-
-                return data;
+                // iSolarCloud listet die Werte im DOM in der Regel in einer festen Reihenfolge auf:
+                // 1. PV-Leistung, 2. Speicher, 3. Hausverbrauch, 4. Netz
+                return {
+                    pv: powers.length > 0 ? toNumber(powers[0]) : 0,
+                    battery: powers.length > 1 ? toNumber(powers[1]) : 0,
+                    house: powers.length > 2 ? toNumber(powers[2]) : 0,
+                    grid: powers.length > 3 ? toNumber(powers[3]) : 0,
+                    soc: socVal,
+                    rawPowers: powers
+                };
             });
 
+            console. Gefundene Rohwerte:", parsedData.rawPowers);
+
+            energyData.pvPower = parsedData.pv;
+            energyData.batteryPower = parsedData.battery;
+            energyData.housePower = parsedData.house;
+            energyData.gridPower = parsedData.grid;
             energyData.batterySoc = parsedData.soc;
             energyData.updatedAt = new Date().toISOString();
+
             console.log("Energiedaten erfolgreich extrahiert.");
 
         } catch (err) {
