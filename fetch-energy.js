@@ -25,7 +25,7 @@ function postJson(url, data, headers = {}) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
-                'appkey': 'ANDROIDE13EC118BD7892FE7AB5A3F20',
+                'appkey': 'B0455FBE7AA0328DB57B59AA729F05D8',
                 ...headers
             }
         };
