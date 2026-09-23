@@ -45,30 +45,36 @@ async function main() {
 
             // Cookie-Banner akzeptieren, falls vorhanden
             try {
-                const cookieBtn = 'button:has-text("Yes, I agree"), button:has-text("Zustimmen")';
-                await page.click(cookieBtn, { timeout: 5000 });
+                await page.click('button:has-text("Yes, I agree"), button:has-text("Zustimmen")', { timeout: 5000 });
                 console.log("Cookie-Banner bestätigt.");
             } catch (e) {
-                console.log("Kein Cookie-Banner gefunden oder bereits ausgeblendet.");
+                console.log("Kein Cookie-Banner gefunden.");
             }
 
             console.log("Warte auf Login-Maske...");
             
-            // Spezifische Felder aus dem Screenshot ansprechen (placeholder="Account" und placeholder="Password")
-            const userInput = 'input[placeholder="Account"], input[placeholder="Konto"], input[type="text"]';
+            // Wir suchen gezielt nach dem Eingabefeld mit dem Platzhalter "Account" oder "Konto" (ohne das allgemeine input[type="text"])
+            const userInput = 'input[placeholder="Account"], input[placeholder="Konto"], input.el-input__inner:not([readonly])';
             await page.waitForSelector(userInput, { timeout: 15000 });
 
-            await page.fill(userInput, user);
-            await page.fill('input[placeholder="Password"], input[placeholder="Passwort"], input[type="password"]', pass);
+            // Das erste beschreibbare Feld ist nun garantiert das Benutzerfeld
+            const inputs = await page.locator(userInput).all();
+            for (let input of inputs) {
+                if (await input.isEditable()) {
+                    await input.fill(user);
+                    break;
+                }
+            }
 
-            // Auf den orangefarbenen Login-Button klicken
+            // Passwort eingeben
+            await page.fill('input[type="password"]', pass);
+
+            // Auf den Login-Button klicken
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Warten bis das Dashboard nach dem Login geladen ist
+            // Warten bis das Dashboard geladen ist
             await page.waitForLoadState('networkidle');
             console.log("Erfolgreich eingeloggt!");
-
-            // Hier bauen wir im nächsten Schritt das Auslesen der Energiedaten ein
 
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
