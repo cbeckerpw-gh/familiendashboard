@@ -29,8 +29,10 @@ jobs:
           const ical = require("node-ical");
 
           async function update() {
+              console.log("📅 Starte Kalender-Aktualisierung...");
+
               const calendarSources = [
-                  { url: "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics", defaultPerson: "familie" },
+                  { url: "https://calendar.google.com/calendar/ical/family15160420290140632345%40group.calendar.google.com/public/basic.ics", defaultPerson: "eltern" },
                   { url: "https://calendar.google.com/calendar/ical/s.fleher86%40googlemail.com/public/basic.ics", defaultPerson: "mama" },
                   { url: "https://calendar.google.com/calendar/ical/cbecker.pw%40googlemail.com/public/basic.ics", defaultPerson: "papa" }
               ];
@@ -42,7 +44,9 @@ jobs:
 
               for (const source of calendarSources) {
                   try {
+                      console.log(`📥 Lade Kalender für Kategorie: [${source.defaultPerson}]...`);
                       const webEvents = await ical.async.fromURL(source.url);
+                      let countBefore = allEvents.length;
 
                       for (let k in webEvents) {
                           const ev = webEvents[k];
@@ -68,10 +72,8 @@ jobs:
                               if (ev.rrule) {
                                   const dates = ev.rrule.between(startDate, endDate, true);
                                   dates.forEach(date => {
-                                      // Dauer des Originaltermins beibehalten
                                       const duration = new Date(ev.end).getTime() - new Date(ev.start).getTime();
                                       const recurrenceStart = new Date(date);
-                                      // Uhrzeit vom Original übernehmen bei nicht-ganztägigen Terminen
                                       if (!ev.dateOnly) {
                                           recurrenceStart.setHours(new Date(ev.start).getHours(), new Date(ev.start).getMinutes());
                                       }
@@ -88,13 +90,14 @@ jobs:
                               }
                           }
                       }
+                      console.log(`✅ ${source.defaultPerson}: ${allEvents.length - countBefore} Termine im relevanten Zeitraum gefunden.`);
                   } catch (e) {
-                      console.error("Fehler bei URL:", source.url, e);
+                      console.error(`❌ Fehler beim Abrufen der URL für [${source.defaultPerson}]:`, e.message);
                   }
               }
 
               fs.writeFileSync("calendar.json", JSON.stringify(allEvents, null, 2));
-              console.log("Gesamt gefundene Termine (inkl. aufgelöster Serien):", allEvents.length);
+              console.log(`💾 Fertig! Insgesamt ${allEvents.length} Termine in calendar.json gespeichert.`);
           }
           update();
           '
@@ -104,4 +107,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add calendar.json
-          git diff --staged --quiet || (git commit -m "Auto-update calendar.json with expanded RRULE instances" && git push)
+          git diff --staged --quiet || (git commit -m "Auto-update calendar.json (changed familie to eltern and added status logs)" && git push)
