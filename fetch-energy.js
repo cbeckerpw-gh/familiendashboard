@@ -34,7 +34,7 @@ async function main() {
     const pass = process.env.ISOLAR_PASS;
 
     if (user && pass) {
-        console.r("Starte Headless-Browser für iSolarCloud...");
+        console.log("Starte Headless-Browser für iSolarCloud...");
         const browser = await chromium.launch({ headless: true });
         const context = await browser.newContext();
         const page = await context.newPage();
