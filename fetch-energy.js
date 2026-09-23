@@ -40,24 +40,25 @@ async function main() {
         const page = await context.newPage();
 
         try {
-            // Zum iSolarCloud Portal navigieren
-            await page.goto('https://portaleu.isolarcloud.com', { waitUntil: 'networkidle' });
+            // Zum iSolarCloud Web-Portal navigieren
+            await page.goto('https://portaleu.isolarcloud.com', { waitUntil: 'domcontentloaded' });
 
-            // Zugangsdaten eingeben (Selektoren ggf. anpassen, falls sich die Login-Maske unterscheidet)
-            // Wir suchen nach den Eingabefeldern für Benutzer und Passwort
-            await page.fill('input[type="text"], input[placeholder*="Konto"], input[placeholder*="User"]', user);
+            console.log("Warte auf Login-Felder...");
+            const userInputSelector = 'input[type="text"], input[type="email"], input';
+            await page.waitForSelector(userInputSelector, { timeout: 15000 });
+
+            // Benutzername und Passwort eingeben
+            await page.fill(userInputSelector, user);
             await page.fill('input[type="password"]', pass);
 
             // Login-Button anklicken
-            await page.click('button:has-text("Anmelden"), button:has-text("Login"), .login-btn');
+            await page.click('button:has-text("Anmelden"), button:has-text("Login"), .el-button--primary');
 
-            // Warten bis das Dashboard geladen ist
+            // Warten bis nach dem Login das Dashboard erreicht ist
             await page.waitForLoadState('networkidle');
             console.log("Erfolgreich eingeloggt, lese Dashboard aus...");
 
-            // Hier können wir nun gezielt nach den Elementen auf dem Dashboard greifen
-            // (Beispiel: Auslesen von Textinhalten bestimmter CSS-Klassen deiner Anlage)
-            // energyData.pvPower = ...
+            // Hier bauen wir im nächsten Schritt die Auslese-Logik für deine Leistungsdaten ein
 
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
