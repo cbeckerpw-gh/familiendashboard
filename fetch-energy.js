@@ -29,7 +29,7 @@ async function main() {
         console.log('Zappi-Abruf übersprungen.');
     }
 
-    // 2. Sungrow iSolarCloud via Playwright & SVG Text Parsing
+    // 2. Sungrow iSolarCloud via Playwright & Bereinigtes SVG Parsing
     const user = process.env.ISOLAR_USER;
     const pass = process.env.ISOLAR_PASS;
 
@@ -62,33 +62,31 @@ async function main() {
             await page.waitForURL('**/plantList**', { timeout: 20000 });
             await page.click('text=Christian Becker');
 
-            // Warten bis das Dashboard und das SVG-Energieflussbild geladen sind
             await page.waitForSelector('.overview, canvas, svg', { timeout: 15000 });
             await page.waitForTimeout(6000); // Puffer für Live-Daten
 
-            // Alle Texte (inklusive SVG tspan/text Knoten) einsammeln und parsen
             const parsedData = await page.evaluate(() => {
                 let texts = [];
-                // Greift alle Standard-DOM-Elemente UND SVG-Texte ab
                 document.querySelectorAll('span, div, tspan, text').forEach(el => {
                     let txt = el.textContent.trim();
                     if (txt) texts.push(txt);
                 });
 
-                let powers = [];
+                let rawPowers = [];
                 let socVal = 100;
 
                 for (let t of texts) {
-                    // Filter für Leistungswerte wie "3.7 kW", "450 W", "0 W"
                     if (/^\d+([.,]\d+)?\s*(kW|W)$/i.test(t)) {
-                        powers.push(t);
+                        rawPowers.push(t);
                     }
-                    // Filter für Batterie SoC wie "100%"
                     if (/^\d+\s*%$/.test(t)) {
                         let val = parseInt(t);
                         if (!isNaN(val) && val <= 100) socVal = val;
                     }
                 }
+
+                // Duplikate aus SVG-Layern entfernen, Reihenfolge beibehalten
+                let powers = [...new Set(rawPowers)];
 
                 function toNumber(str) {
                     if (!str) return 0;
@@ -103,20 +101,20 @@ async function main() {
 
                 return {
                     pv: powers.length > 0 ? toNumber(powers[0]) : 0,
-                    battery: powers.length > 1 ? toNumber(powers[1]) : 0,
+                    grid: powers.length > 1 ? toNumber(powers[1]) : 0,
                     house: powers.length > 2 ? toNumber(powers[2]) : 0,
-                    grid: powers.length > 3 ? toNumber(powers[3]) : 0,
+                    battery: powers.length > 3 ? toNumber(powers[3]) : 0,
                     soc: socVal,
-                    allPowersFound: powers
+                    uniquePowersFound: powers
                 };
             });
 
-            console.log("Erkannte Leistungswerte:", parsedData.allPowersFound);
+            console.log("Bereinigte Leistungswerte:", parsedData.uniquePowersFound);
 
             energyData.pvPower = parsedData.pv;
-            energyData.batteryPower = parsedData.battery;
-            energyData.housePower = parsedData.house;
             energyData.gridPower = parsedData.grid;
+            energyData.housePower = parsedData.house;
+            energyData.batteryPower = parsedData.battery;
             energyData.batterySoc = parsedData.soc;
             energyData.updatedAt = new Date().toISOString();
 
