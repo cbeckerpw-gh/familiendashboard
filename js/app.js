@@ -23,26 +23,13 @@ function setupDates() {
 // KALENDER LADEN (Direkt aus der stabilen calendar.json der GitHub Action)
 async function loadCalendarData() {
     try {
-        const response = await fetch('calendar.json');
+        const response = await fetch('calendar.json?' + new Date().getTime());
         if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
         
         const rawEvents = await response.json();
         processLoadedEvents(rawEvents);
     } catch (error) {
         console.error('Fehler beim Laden der calendar.json:', error);
-        loadFallbackEvents();
-    }
-}
-
-function loadFallbackEvents() {
-    // Beispieldaten für die Ansicht, falls die JSON mal fehlen sollte
-    realEvents = [
-        { day: 'today', person: 'papa', name: 'Papa', icon: '👨', title: 'Mülltonne rausbringen', location: 'Haus', description: 'Papier und Restmüll', time: '08:00 Uhr', rawTime: '08:00' },
-        { day: 'tomorrow', person: 'irma', name: 'Irma', icon: '👧', title: 'Kinderturnen', location: 'Sporthalle', description: 'Turnschuhe nicht vergessen', time: '16:00 Uhr', rawTime: '16:00' }
-    ];
-    
-    if (typeof renderEvents === 'function') {
-        renderEvents();
     }
 }
 
@@ -54,26 +41,44 @@ function processLoadedEvents(events) {
         const title = ev.summary;
         const lowerTitle = title.toLowerCase();
 
-        let person = ev.sourcePerson || 'familie';
-        let name = 'Familie';
-        let icon = '🏡';
+        let person = ev.sourcePerson || 'eltern';
+        let name = 'Eltern';
+        let icon = '👥';
 
-        if (person === 'papa') {
-            name = 'Papa';
-            icon = '👨';
-        } else if (person === 'mama') {
-            name = 'Mama';
-            icon = '👩';
-        } else if (person === 'oskar' || lowerTitle.includes('oskar')) {
+        const hasOskar = lowerTitle.includes('oskar');
+        const hasIrma = lowerTitle.includes('irma');
+
+        // 1. Beide Kinder gemeinsam (z.B. "Oskar & Irma", "Irma/Oskar")
+        if (hasOskar && hasIrma) {
+            person = 'geschwister';
+            name = 'Oskar & Irma';
+            icon = '👧👦';
+        } 
+        // 2. Nur Oskar
+        else if (person === 'oskar' || hasOskar) {
             person = 'oskar';
             name = 'Oskar';
             icon = '👦';
-        } else if (person === 'irma' || lowerTitle.includes('irma')) {
+        } 
+        // 3. Nur Irma
+        else if (person === 'irma' || hasIrma) {
             person = 'irma';
             name = 'Irma';
             icon = '👧';
-        } else if (lowerTitle.includes('elternabend') || lowerTitle.includes('eltern')) {
-            person = 'familie';
+        } 
+        // 4. Papa
+        else if (person === 'papa') {
+            name = 'Papa';
+            icon = '👨';
+        } 
+        // 5. Mama
+        else if (person === 'mama') {
+            name = 'Mama';
+            icon = '👩';
+        } 
+        // 6. Eltern / Allgemein / Family
+        else if (person === 'eltern' || lowerTitle.includes('elternabend') || lowerTitle.includes('eltern')) {
+            person = 'eltern';
             name = 'Eltern';
             icon = '👥';
         }
@@ -298,21 +303,6 @@ function toggleLight(room) {
         document.getElementById('dot-irma').className = irmaLightOn ? 'status-dot active' : 'status-dot';
         document.getElementById('text-irma').innerText = irmaLightOn ? 'Licht an (15W)' : 'Licht aus (0W)';
     }
-}
-
-function addDemoEvent() {
-    realEvents.push({
-        day: 'today',
-        person: 'irma',
-        name: 'Irma',
-        icon: '👧',
-        title: 'Test-Termin manuell',
-        location: 'Sporthalle',
-        description: 'Bitte Turnschuhe nicht vergessen',
-        time: '18:00 Uhr',
-        rawTime: '18:00'
-    });
-    renderEvents();
 }
 
 function toggleReadme() {
