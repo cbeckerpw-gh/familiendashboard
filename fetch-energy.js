@@ -12,7 +12,7 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Zappi / Myenergi Abruf (über API Key oder lokales/Cloud Hub)
+    // 1. Zappi / Myenergi Abruf
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
@@ -40,7 +40,6 @@ async function main() {
         const page = await context.newPage();
 
         try {
-            // Login-Seite aufrufen
             await page.goto('https://www.isolarcloud.eu/?lang=de_DE#/login', { waitUntil: 'networkidle', timeout: 60000 });
 
             try {
@@ -60,30 +59,28 @@ async function main() {
             await page.fill('input[type="password"]', pass);
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Anlagenübersicht abwarten und auf Anlage klicken
+            // Zur Anlagenübersicht und Klick auf die Anlage
             await page.waitForURL('**/plantList**', { timeout: 20000 });
-            console.log("In Anlagenübersicht eingeloggt, klicke auf Anlage...");
             await page.click('text=Christian Becker');
 
-            // Warten bis das Energiefluss-Dashboard geladen ist
+            // Warten bis das Dashboard geladen ist
             await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
-            await page.waitForTimeout(6000); // Ausreichend Puffer für das Rendern der Live-Werte
+            await page.waitForTimeout(6000); // Puffer für Live-Werte
 
-            // Leistungswerte aus dem Dashboard extrahieren
+            // Vollständiges Auslesen aller Text- und SVG-Elemente auf der Dashboard-Seite
             const parsedData = await page.evaluate(() => {
-                let data = { pv: 0, house: 0, battery: 0, soc: 0, grid: 0 };
+                let data = { pv: 0, house: 0, batteryPower: 0, soc: 0, grid: 0 };
                 
-                // Alle Textknoten und Elemente scannen, um die Leistungsangaben (kW/W/%) zu finden
-                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-                let node;
+                // Wir sammeln alle Textinhalte und prüfen auch SVG-Textknoten
+                const elements = document.querySelectorAll('text, span, div');
                 let texts = [];
-                while (node = walker.nextNode()) {
-                    let val = node.nodeValue.trim();
-                    if (val) texts.push(val);
-                }
+                elements.forEach(el => {
+                    let txt = el.textContent.trim();
+                    if (txt) texts.push(txt);
+                });
 
-                // Hilfsfunktion zum Umrechnen in kW
-                function toKW(str) {
+                // Hilfsfunktion zur Konvertierung von Leistungsstrings (z.B. "1.5 kW" oder "450 W") in kW (Float)
+                function parsePower(str) {
                     if (!str) return 0;
                     let clean = str.toLowerCase().replace(',', '.').replace('kw', '').replace('w', '').trim();
                     let num = parseFloat(clean);
@@ -94,7 +91,7 @@ async function main() {
                     return Math.round(num * 100) / 100;
                 }
 
-                // Durchsuche die Texte nach bekannten Mustern des Energieflussbildes
+                // Durchsuche die gefundenen Texte nach typischen Mustern
                 for (let i = 0; i < texts.length; i++) {
                     let t = texts[i];
                     if (t.includes('%')) {
