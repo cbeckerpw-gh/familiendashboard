@@ -1,9 +1,9 @@
 {
-  "pvPower": 3.7,
+  "pvPower": 3,
   "batteryPower": 0,
   "batterySoc": 100,
-  "housePower": 0.34,
+  "housePower": 0.32,
   "zappiPower": 0,
-  "gridPower": 3.3,
-  "updatedAt": "2026-09-23T13:36:44.095Z"
+  "gridPower": 2.7,
+  "updatedAt": "2026-09-23T13:42:26.227Z"
 }
