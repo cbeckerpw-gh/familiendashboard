@@ -72,16 +72,13 @@ async function main() {
                 let powers = [];
                 let socVal = 100;
 
-                // Alle Elemente ohne Kinder durchgehen, die Leistung oder Prozent enthalten
                 const elements = document.querySelectorAll('*');
                 elements.forEach(el => {
                     if (el.children.length === 0) {
                         let txt = el.textContent.trim();
-                        // Prüfen ob es ein Leistungswert ist (z.B. "3.7 kW", "450 W")
                         if (/^\d+([.,]\d+)?\s*(kW|W)$/i.test(txt)) {
                             powers.push(txt);
                         }
-                        // Prüfen auf SoC (z.B. "100%")
                         if (/^\d+\s*%$/.test(txt)) {
                             let parsedSoc = parseInt(txt);
                             if (!isNaN(parsedSoc) && parsedSoc <= 100) {
@@ -102,8 +99,6 @@ async function main() {
                     return Math.round(num * 100) / 100;
                 }
 
-                // iSolarCloud listet die Werte im DOM in der Regel in einer festen Reihenfolge auf:
-                // 1. PV-Leistung, 2. Speicher, 3. Hausverbrauch, 4. Netz
                 return {
                     pv: powers.length > 0 ? toNumber(powers[0]) : 0,
                     battery: powers.length > 1 ? toNumber(powers[1]) : 0,
@@ -114,7 +109,7 @@ async function main() {
                 };
             });
 
-            console. Gefundene Rohwerte:", parsedData.rawPowers);
+            console.log("Gefundene Rohwerte:", parsedData.rawPowers);
 
             energyData.pvPower = parsedData.pv;
             energyData.batteryPower = parsedData.battery;
