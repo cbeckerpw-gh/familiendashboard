@@ -14,6 +14,37 @@ function getJson(url, headers = {}) {
     });
 }
 
+function postJson(url, data, headers = {}) {
+    return new Promise((resolve, reject) => {
+        const dataString = JSON.stringify(data);
+        const urlObj = new URL(url);
+        
+        const options = {
+            hostname: urlObj.hostname,
+            path: urlObj.pathname + urlObj.search,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'appkey': 'OB_EU_1809_android',
+                ...headers
+            }
+        };
+
+        const req = https.request(options, (res) => {
+            let body = '';
+            res.on('data', (chunk) => body += chunk);
+            res.on('end', () => {
+                try { resolve(JSON.parse(body)); } 
+                catch (e) { resolve(body); }
+            });
+        });
+
+        req.on('error', (err) => reject(err));
+        req.write(dataString);
+        req.end();
+    });
+}
+
 async function main() {
     let energyData = {
         pvPower: 0,
@@ -25,32 +56,44 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // Zappi / Myenergi direkt mit der festen URL ansprechen
+    // --- 1. Zappi / Myenergi (Wartet auf Behebung des myenergi API-Problems) ---
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
 
         if (apiKey) {
-            // Direkt die finale URL ohne Variablen-Risiko zusammenbauen
             const zappiUrl = 'https://s20373960.myenergi.net/cgi-status-Z20373960';
             const authHeader = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
             
-            console.log("Versuche Zappi Abruf für URL:", zappiUrl);
             const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
-            
-            console.log("Zappi Rohdaten:", JSON.stringify(zappiRes, null, 2));
 
             if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
                 energyData.zappiPower = Math.round(((zappiRes.sdi[0].ect[1] || 0) / 1000) * 100) / 100;
-                console.log('Zappi-Daten erfolgreich abgerufen! Leistung:', energyData.zappiPower, 'kW');
-            } else {
-                console.log('Zappi-Antwort erhalten, aber unerwartetes Format.');
             }
-        } else {
-            console.log('MYENERGI_API_KEY Secret fehlt im Workflow.');
         }
     } catch (err) {
-        console.log('Zappi-Abruf Fehler:', err.message);
+        console.log('Zappi-Abruf pausiert/übersprungen (Server-Störung bei Myenergi).');
+    }
+
+    // --- 2. Sungrow iSolarCloud Daten abrufen ---
+    try {
+        const user = process.env.ISOLAR_USER;
+        const pass = process.env.ISOLAR_PASS;
+
+        if (user && pass) {
+            const loginUrl = 'https://gateway.isolarcloud.eu/openapi/login';
+            const loginRes = await postJson(loginUrl, {
+                user_account: user,
+                user_pwd: pass
+            });
+
+            console.log("Sungrow Login-Antwort erhalten:", JSON.stringify(loginRes));
+            // Hier werten wir im nächsten Schritt die Gerätedaten aus, sobald der Login durchgeht
+        } else {
+            console.log('Sungrow Zugangsdaten (ISOLAR_USER / ISOLAR_PASS) fehlen im Workflow.');
+        }
+    } catch (err) {
+        console.log('Sungrow-Abruf Fehler:', err.message);
     }
 
     fs.writeFileSync('energy.json', JSON.stringify(energyData, null, 2));
