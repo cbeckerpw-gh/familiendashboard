@@ -59,46 +59,40 @@ async function main() {
             await page.fill('input[type="password"]', pass);
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Zur Anlagenübersicht und Klick auf die Anlage
+            // Anlagenübersicht und Klick auf Anlage
             await page.waitForURL('**/plantList**', { timeout: 20000 });
             await page.click('text=Christian Becker');
 
             // Warten bis das Dashboard geladen ist
             await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
-            await page.waitForTimeout(6000); // Puffer für Live-Werte
+            await page.waitForTimeout(6000);
 
-            // Vollständiges Auslesen aller Text- und SVG-Elemente auf der Dashboard-Seite
+            // Werte aus dem iSolarCloud Dashboard extrahieren
             const parsedData = await page.evaluate(() => {
-                let data = { pv: 0, house: 0, batteryPower: 0, soc: 0, grid: 0 };
+                let data = { pv: 0, house: 0, batteryPower: 0, soc: 100, grid: 0 };
                 
-                // Wir sammeln alle Textinhalte und prüfen auch SVG-Textknoten
-                const elements = document.querySelectorAll('text, span, div');
-                let texts = [];
-                elements.forEach(el => {
-                    let txt = el.textContent.trim();
-                    if (txt) texts.push(txt);
-                });
-
-                // Hilfsfunktion zur Konvertierung von Leistungsstrings (z.B. "1.5 kW" oder "450 W") in kW (Float)
-                function parsePower(str) {
-                    if (!str) return 0;
-                    let clean = str.toLowerCase().replace(',', '.').replace('kw', '').replace('w', '').trim();
+                // Hilfsfunktion zum Parsen von Leistungswerten (kW / W)
+                function parsePowerVal(text) {
+                    if (!text) return 0;
+                    let clean = text.toLowerCase().replace(',', '.');
                     let num = parseFloat(clean);
                     if (isNaN(num)) return 0;
-                    if (str.toLowerCase().includes('w') && !str.toLowerCase().includes('kw')) {
+                    if (clean.includes('w') && !clean.includes('kw')) {
                         num = num / 1000;
                     }
                     return Math.round(num * 100) / 100;
                 }
 
-                // Durchsuche die gefundenen Texte nach typischen Mustern
-                for (let i = 0; i < texts.length; i++) {
-                    let t = texts[i];
-                    if (t.includes('%')) {
-                        let socVal = parseInt(t.replace('%', '').trim());
-                        if (!isNaN(socVal) && socVal <= 100) data.soc = socVal;
+                // Wir durchsuchen alle Elemente, die Leistungsangaben enthalten könnten
+                const allElements = document.querySelectorAll('span, div, text');
+                allElements.forEach(el => {
+                    let txt = el.textContent.trim();
+                    // Suche nach SoC Wert (%)
+                    if (txt.endsWith('%')) {
+                        let val = parseInt(txt.replace('%', '').trim());
+                        if (!isNaN(val) && val <= 100) data.soc = val;
                     }
-                }
+                });
 
                 return data;
             });
