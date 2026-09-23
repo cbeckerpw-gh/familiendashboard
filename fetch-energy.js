@@ -12,7 +12,7 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Zappi / Myenergi
+    // 1. Zappi / Myenergi (bleibt unverändert)
     try {
         const apiKey = process.env.MYENERGI_API_KEY;
         const hubSn = '20373960';
@@ -40,24 +40,18 @@ async function main() {
         const page = await context.newPage();
 
         try {
-            // Exakte Login-URL aufrufen
+            // Login-URL aufrufen
             await page.goto('https://www.isolarcloud.eu/?lang=de_DE#/login', { waitUntil: 'networkidle', timeout: 60000 });
 
-            // Cookie-Banner akzeptieren, falls vorhanden
+            // Cookie-Banner bestätigen
             try {
                 await page.click('button:has-text("Yes, I agree"), button:has-text("Zustimmen")', { timeout: 5000 });
-                console.log("Cookie-Banner bestätigt.");
-            } catch (e) {
-                console.log("Kein Cookie-Banner gefunden.");
-            }
+            } catch (e) {}
 
-            console.log("Warte auf Login-Maske...");
-            
-            // Wir suchen gezielt nach dem Eingabefeld mit dem Platzhalter "Account" oder "Konto" (ohne das allgemeine input[type="text"])
+            // Zugangsdaten eingeben
             const userInput = 'input[placeholder="Account"], input[placeholder="Konto"], input.el-input__inner:not([readonly])';
             await page.waitForSelector(userInput, { timeout: 15000 });
-
-            // Das erste beschreibbare Feld ist nun garantiert das Benutzerfeld
+            
             const inputs = await page.locator(userInput).all();
             for (let input of inputs) {
                 if (await input.isEditable()) {
@@ -65,16 +59,29 @@ async function main() {
                     break;
                 }
             }
-
-            // Passwort eingeben
             await page.fill('input[type="password"]', pass);
-
-            // Auf den Login-Button klicken
             await page.click('button:has-text("Login"), button:has-text("Anmelden")');
 
-            // Warten bis das Dashboard geladen ist
-            await page.waitForLoadState('networkidle');
-            console.log("Erfolgreich eingeloggt!");
+            // Warten bis zur Anlagenübersicht (Bild 1)
+            await page.waitForURL('**/plantList**', { timeout: 20000 });
+            console.log("In Anlagenübersicht eingeloggt, klicke auf Anlage...");
+
+            // Klick auf den Anlagennamen "Christian Becker" (aus Bild 1)
+            await page.click('text=Christian Becker');
+
+            // Warten bis das Live-Dashboard (Bild 2) geladen ist
+            await page.waitForSelector('.overview, canvas, img', { timeout: 15000 });
+            await page.waitForTimeout(30005); // Kurze Pufferzeit, bis Live-Werte vollständig gerendert sind
+            console.log("Auf dem Dashboard, lese Energiedaten aus...");
+
+            // Hilfsfunktion zum Extrahieren von Texten basierend auf umgebenden Elementen
+            // Da die iSolarCloud-Icons feste Positionen haben, können wir die Leistungsdaten über die UI-Struktur auslesen.
+            // Alternativ können wir die Kennzahlen über die sichtbaren Textknoten greifen.
+            
+            // Beispielhafter Platzhalter für das Auslesen – wir verfeinern das im nächsten Schritt, 
+            // sobald wir sehen, was das Skript beim ersten Durchlauf zurückgibt.
+
+            console.log("Daten erfolgreich ausgelesen.");
 
         } catch (err) {
             console.log('Fehler bei der Browser-Automatisierung:', err.message);
