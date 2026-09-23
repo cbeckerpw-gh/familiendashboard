@@ -1,37 +1,5 @@
 const fs = require('fs');
-const https = require('https');
-
-function postJson(url, data, headers = {}) {
-    return new Promise((resolve, reject) => {
-        const urlObj = new URL(url);
-        const dataStr = JSON.stringify(data);
-        
-        const options = {
-            hostname: urlObj.hostname,
-            path: urlObj.pathname + urlObj.search,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                'lang': 'de_DE',
-                'Content-Length': Buffer.byteLength(dataStr),
-                ...headers
-            }
-        };
-
-        const req = https.request(options, (res) => {
-            let body = '';
-            res.on('data', (chunk) => body += chunk);
-            res.on('end', () => {
-                try { resolve(JSON.parse(body)); } 
-                catch (e) { resolve(body); }
-            });
-        });
-
-        req.on('error', (err) => reject(err));
-        req.write(dataStr);
-        req.end();
-    });
-}
+const https = https = require('https');
 
 function getJson(url, headers = {}) {
     return new Promise((resolve, reject) => {
@@ -57,18 +25,16 @@ async function main() {
         updatedAt: new Date().toISOString()
     };
 
-    // 1. Zappi / Myenergi Daten abrufen (mit fester Fallback-SN zur Sicherheit)
+    // Zappi / Myenergi Daten direkt mit fester Seriennummer 20373960 abrufen
     try {
-        const hubSn = process.env.MYENERGI_HUB_SN || '20373960';
+        const hubSn = '20373960';
         const apiKey = process.env.MYENERGI_API_KEY;
 
-        if (hubSn && apiKey) {
+        if (apiKey) {
             const zappiUrl = `https://s${hubSn}.myenergi.net/cgi-status-Z${hubSn}`;
             const authHeader = 'Basic ' + Buffer.from(`${hubSn}:${apiKey}`).toString('base64');
             
-            console._log = console.log;
-            console.log("Versuche Zappi Abruf für:", zappiUrl);
-
+            console.log("Versuche Zappi Abruf für URL:", zappiUrl);
             const zappiRes = await getJson(zappiUrl, { 'Authorization': authHeader });
             
             if (zappiRes && zappiRes.sdi && zappiRes.sdi.length > 0) {
@@ -78,7 +44,7 @@ async function main() {
                 console.log('Zappi-Antwort erhalten, aber unerwartetes Format:', JSON.stringify(zappiRes));
             }
         } else {
-            console.log('Zappi API-Key fehlt.');
+            console.log('MYENERGI_API_KEY Secret fehlt im Workflow.');
         }
     } catch (err) {
         console.log('Zappi-Abruf Fehler:', err.message);
