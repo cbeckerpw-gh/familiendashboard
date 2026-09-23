@@ -10,7 +10,7 @@
       --color-irma: #1565c0;    /* Blue */
       --color-mama: #7b1fa2;    /* Purple */
       --color-papa: #00838f;    /* Teal */
-      --color-family: #d35400;  /* Orange */
+      --color-eltern: #d35400;  /* Orange */
 
       /* Energy Colors */
       --color-pv: #f39c12;
@@ -93,7 +93,7 @@
     .legend-item.irma,  .event-card.irma  { background-color: var(--color-irma); }
     .legend-item.mama,  .event-card.mama  { background-color: var(--color-mama); }
     .legend-item.papa,  .event-card.papa  { background-color: var(--color-papa); }
-    .legend-item.familie, .event-card.familie { background-color: var(--color-family); }
+    .legend-item.eltern, .event-card.eltern { background-color: var(--color-eltern); }
 
     .btn-readme {
       background-color: #34495e;
@@ -325,12 +325,12 @@
     }
 
     /* Styling für Eltern- / Familien-Termine */
-    .event-card.familie {
+    .event-card.eltern {
         background-color: #f4ecdf; /* Ein ruhiger, warmer Ton */
         border-left: 4px solid #b89768;
     }
     
-    .event-card.familie .event-person-badge {
+    .event-card.eltern .event-person-badge {
         background-color: #e6d5be;
         color: #5c4a32;
     }
