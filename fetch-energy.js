@@ -41,7 +41,7 @@ async function main() {
 
         try {
             // Zum iSolarCloud Portal navigieren
-            await page.goto('https://gateway.isolarcloud.eu', { waitUntil: 'networkidle' });
+            await page.goto('https://portaleu.isolarcloud.com', { waitUntil: 'networkidle' });
 
             // Zugangsdaten eingeben (Selektoren ggf. anpassen, falls sich die Login-Maske unterscheidet)
             // Wir suchen nach den Eingabefeldern für Benutzer und Passwort
