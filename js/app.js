@@ -305,17 +305,21 @@ function toggleLight(room) {
     }
 }
 
-function toggleReadme() {
+function openReadme() {
     const modal = document.getElementById('readme-modal');
     modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
 }
 
+function toggleReadme() {
+    openReadme();
+}
+
 // DASHBOARD MANUELL AKTUALISIEREN (Perfekt für den Kiosk-Modus / iPad)
-function refreshDashboard() {
+function triggerRefresh() {
     const btn = document.querySelector('.refresh-btn');
     if (btn) {
         btn.style.transform = 'rotate(360deg)';
-        setTimeout(() => btn.style.transform = 'none', 300);
+        setTimeout(() => btn.style.transform = 'none', 400);
     }
     
     // Daten neu einlesen (Kalender & Energie)
