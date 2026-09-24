@@ -1,15 +1,9 @@
 [
   {
     "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "20260929T144500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "20261006T144500Z",
+    "summary": "Irma - Kindergarten geschlossen (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
     "location": "",
     "description": ""
   },
@@ -17,13 +11,23 @@
     "sourcePerson": "eltern",
     "summary": "Irma - Geburtstag Malina",
     "start": "20260923T130000Z",
+    "end": "20260923T160000Z",
     "location": "",
     "description": ""
   },
   {
     "sourcePerson": "eltern",
-    "summary": "Irma - Kindergarten geschlossen (Teamtag)",
-    "start": "20260928T000000Z",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "20260929T144500Z",
+    "end": "20260929T154500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "20261006T144500Z",
+    "end": "20261006T154500Z",
     "location": "",
     "description": ""
   },
@@ -31,6 +35,7 @@
     "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20260923T144500Z",
+    "end": "20260923T154500Z",
     "location": "",
     "description": ""
   },
@@ -38,6 +43,7 @@
     "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20260930T144500Z",
+    "end": "20260930T154500Z",
     "location": "",
     "description": ""
   },
@@ -45,6 +51,7 @@
     "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20261007T144500Z",
+    "end": "20261007T154500Z",
     "location": "",
     "description": ""
   },
@@ -52,13 +59,7 @@
     "sourcePerson": "eltern",
     "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
     "start": "20261005T150000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "mama",
-    "summary": "Basar helfen",
-    "start": "20260925T000000Z",
+    "end": "20261005T160000Z",
     "location": "",
     "description": ""
   },
@@ -66,13 +67,15 @@
     "sourcePerson": "mama",
     "summary": "Arbeiten Blumenladen",
     "start": "20260924T120000Z",
+    "end": "20260924T160000Z",
     "location": "",
     "description": ""
   },
   {
-    "sourcePerson": "papa",
-    "summary": "Geburtstag: Heinz - Gerd Becker",
-    "start": "20261001T000000Z",
+    "sourcePerson": "mama",
+    "summary": "Basar helfen",
+    "start": "20260925T000000Z",
+    "end": "20260926T000000Z",
     "location": "",
     "description": ""
   },
@@ -80,13 +83,23 @@
     "sourcePerson": "papa",
     "summary": "Sabine Koch Geburtstag",
     "start": "20260930T000000Z",
+    "end": "20261001T000000Z",
     "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Geburtstag: Heinz - Gerd Becker",
+    "start": "20261001T000000Z",
+    "end": "20261002T000000Z",
+    "location": "",
     "description": ""
   },
   {
     "sourcePerson": "papa",
     "summary": "Papiere/Hausarbeit",
     "start": "20260928T181500Z",
+    "end": "20260928T200000Z",
     "location": "",
     "description": ""
   },
@@ -94,20 +107,7 @@
     "sourcePerson": "papa",
     "summary": "Papiere/Hausarbeit",
     "start": "20261005T181500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Test",
-    "start": "20260923T223000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "20261007T000000Z",
+    "end": "20261005T200000Z",
     "location": "",
     "description": ""
   },
@@ -115,6 +115,23 @@
     "sourcePerson": "papa",
     "summary": "Papa -Test",
     "start": "20260924T003000Z",
+    "end": "20260924T013000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Test",
+    "start": "20260923T223000Z",
+    "end": "20260923T233000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "HO",
+    "start": "20261007T000000Z",
+    "end": "20261008T000000Z",
     "location": "",
     "description": ""
   }
