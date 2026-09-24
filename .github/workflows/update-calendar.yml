@@ -2,7 +2,8 @@ name: Kalender automatisch aktualisieren
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/15 5-23 * * *'  # Tagsüber (von 06:00 bis 22:59 Uhr) alle 5 Minuten
+   
   workflow_dispatch:
 
 concurrency:
