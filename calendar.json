@@ -1,6 +1,22 @@
 [
   {
     "sourcePerson": "eltern",
+    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
+    "start": "20261005T150000Z",
+    "end": "20261005T160000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20260930T144500Z",
     "end": "20260930T154500Z",
@@ -28,22 +44,6 @@
     "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
     "start": "20261006T144500Z",
     "end": "20261006T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
-    "start": "20261005T150000Z",
-    "end": "20261005T160000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
-    "start": "20260928T000000Z",
-    "end": "20260929T000000Z",
     "location": "",
     "description": ""
   },
