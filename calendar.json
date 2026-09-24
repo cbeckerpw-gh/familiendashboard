@@ -1,6 +1,14 @@
 [
   {
     "sourcePerson": "eltern",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20260930T144500Z",
     "end": "20260930T154500Z",
@@ -40,10 +48,10 @@
     "description": ""
   },
   {
-    "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
-    "start": "20260928T000000Z",
-    "end": "20260929T000000Z",
+    "sourcePerson": "mama",
+    "summary": "Arbeiten Blumenladen",
+    "start": "20260924T120000Z",
+    "end": "20260924T160000Z",
     "location": "",
     "description": ""
   },
@@ -52,14 +60,6 @@
     "summary": "Basar helfen",
     "start": "20260925T000000Z",
     "end": "20260926T000000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "mama",
-    "summary": "Arbeiten Blumenladen",
-    "start": "20260924T120000Z",
-    "end": "20260924T160000Z",
     "location": "",
     "description": ""
   },
@@ -97,17 +97,17 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Kinder abholen Oskar um 15Uhr",
-    "start": "20260924T123000Z",
-    "end": "20260924T133000Z",
+    "summary": "HO",
+    "start": "20261007T000000Z",
+    "end": "20261008T000000Z",
     "location": "",
     "description": ""
   },
   {
     "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "20261007T000000Z",
-    "end": "20261008T000000Z",
+    "summary": "Kinder abholen Oskar um 15Uhr",
+    "start": "20260924T123000Z",
+    "end": "20260924T133000Z",
     "location": "",
     "description": ""
   }
