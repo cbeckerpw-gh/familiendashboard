@@ -17,17 +17,9 @@
   },
   {
     "sourcePerson": "eltern",
-    "summary": "Irma - Geburtstag Malina",
-    "start": "20260923T130000Z",
-    "end": "20260923T160000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
-    "start": "20260928T000000Z",
-    "end": "20260929T000000Z",
+    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
+    "start": "20261005T150000Z",
+    "end": "20261005T160000Z",
     "location": "",
     "description": ""
   },
@@ -49,17 +41,9 @@
   },
   {
     "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
-    "start": "20261005T150000Z",
-    "end": "20261005T160000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "mama",
-    "summary": "Arbeiten Blumenladen",
-    "start": "20260924T120000Z",
-    "end": "20260924T160000Z",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
     "location": "",
     "description": ""
   },
@@ -72,11 +56,11 @@
     "description": ""
   },
   {
-    "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
-    "start": "20260930T000000Z",
-    "end": "20261001T000000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
+    "sourcePerson": "mama",
+    "summary": "Arbeiten Blumenladen",
+    "start": "20260924T120000Z",
+    "end": "20260924T160000Z",
+    "location": "",
     "description": ""
   },
   {
@@ -85,6 +69,14 @@
     "start": "20261001T000000Z",
     "end": "20261002T000000Z",
     "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Sabine Koch Geburtstag",
+    "start": "20260930T000000Z",
+    "end": "20261001T000000Z",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": ""
   },
   {
