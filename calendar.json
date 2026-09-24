@@ -1,6 +1,38 @@
 [
   {
     "sourcePerson": "eltern",
+    "summary": "Irma - Kindergarten geschlossen (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "20260929T144500Z",
+    "end": "20260929T154500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "20261006T144500Z",
+    "end": "20261006T154500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Geburtstag Malina",
+    "start": "20260923T130000Z",
+    "end": "20260923T160000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
     "start": "20261005T150000Z",
     "end": "20261005T160000Z",
@@ -28,38 +60,6 @@
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20261007T144500Z",
     "end": "20261007T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "20260929T144500Z",
-    "end": "20260929T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "20261006T144500Z",
-    "end": "20261006T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Kindergarten geschlossen (Teamtag)",
-    "start": "20260928T000000Z",
-    "end": "20260929T000000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Geburtstag Malina",
-    "start": "20260923T130000Z",
-    "end": "20260923T160000Z",
     "location": "",
     "description": ""
   },
