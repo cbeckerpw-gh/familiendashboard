@@ -2,7 +2,7 @@ name: Update Energy Data
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # Läuft alle 15 Minuten
+    - cron: '*/5 * * * *' # Läuft alle 5 Minuten
   workflow_dispatch: # Erlaubt manuelles Starten in GitHub
 
 concurrency:
