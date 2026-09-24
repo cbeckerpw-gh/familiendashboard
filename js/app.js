@@ -75,39 +75,39 @@ function processLoadedEvents(events) {
         const hasOskar = lowerTitle.includes('oskar');
         const hasIrma = lowerTitle.includes('irma');
 
-        // 1. Beide Kinder gemeinsam (z.B. "Oskar & Irma", "Irma/Oskar")
-        if (hasOskar && hasIrma) {
-            person = 'geschwister';
-            name = 'Oskar & Irma';
-            icon = '👧👦';
-        } 
-        // 2. Nur Oskar
-        else if (person === 'oskar' || hasOskar) {
-            person = 'oskar';
-            name = 'Oskar';
-            icon = '👦';
-        } 
-        // 3. Nur Irma
-        else if (person === 'irma' || hasIrma) {
-            person = 'irma';
-            name = 'Irma';
-            icon = '👧';
-        } 
-        // 4. Papa
-        else if (person === 'papa') {
+        // 1. PRIORITÄT: Wenn der Termin direkt aus Papas oder Mamas Kalender kommt, 
+        // bleibt er fest dort und wird nicht durch Namen im Text überschrieben!
+        if (person === 'papa') {
             name = 'Papa';
             icon = '👨';
-        } 
-        // 5. Mama
-        else if (person === 'mama') {
+        } else if (person === 'mama') {
             name = 'Mama';
             icon = '👩';
         } 
-        // 6. Eltern / Allgemein / Family
-        else if (person === 'eltern' || lowerTitle.includes('elternabend') || lowerTitle.includes('eltern')) {
-            person = 'eltern';
-            name = 'Eltern';
-            icon = '👥';
+        // 2. PRIORITÄT: Erst wenn es aus dem allgemeinen Familienkalender ('eltern') kommt, 
+        // greift die Namenserkennung für die Kinder oder Elternabende.
+        else {
+            if (hasOskar && hasIrma) {
+                person = 'geschwister';
+                name = 'Oskar & Irma';
+                icon = '👧👦';
+            } else if (hasOskar) {
+                person = 'oskar';
+                name = 'Oskar';
+                icon = '👦';
+            } else if (hasIrma) {
+                person = 'irma';
+                name = 'Irma';
+                icon = '👧';
+            } else if (lowerTitle.includes('elternabend') || lowerTitle.includes('eltern')) {
+                person = 'eltern';
+                name = 'Eltern';
+                icon = '👥';
+            } else {
+                person = 'eltern';
+                name = 'Eltern';
+                icon = '👥';
+            }
         }
 
         const startStr = ev.start;
