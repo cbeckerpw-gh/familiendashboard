@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDates();
     loadCalendarData();
     loadEnergyData();
+
+    // Alle 5 Minuten (300.000 ms) automatisch im Hintergrund auffrischen
+    setInterval(() => {
+        loadCalendarData();
+        loadEnergyData();
+    }, 5 * 60 * 1000);
 });
 
 // DATUMS-KÖPFE SETZEN
