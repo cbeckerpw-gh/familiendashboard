@@ -134,11 +134,33 @@ function processLoadedEvents(events) {
             timeStr = `${rawTime} Uhr`;
         }
 
-        // Prüfen, ob der Termin heute bereits vorbei ist
+        // Prüfen, ob der Termin heute bereits vorbei ist (anhand der echten Endzeit, falls vorhanden)
         let isPast = false;
         if (dayCategory === 'today' && hasTime) {
             const now = new Date();
-            const eventEndCheck = new Date(year, month, day, hours, minutes);
+            let eventEndCheck;
+
+            // Wenn dein Event eine echte Endzeit (z.B. ev.end) hat:
+            if (ev.end && ev.end.includes('T')) {
+                const endStr = ev.end;
+                const endYear = parseInt(endStr.substring(0, 4));
+                const endMonth = parseInt(endStr.substring(4, 6)) - 1;
+                const endDay = parseInt(endStr.substring(6, 8));
+                const endTimePart = endStr.split('T')[1];
+                let endHours = parseInt(endTimePart.substring(0, 2), 10);
+                let endMinutes = parseInt(endTimePart.substring(2, 4), 10);
+
+                if (endStr.endsWith('Z')) {
+                    endHours += 2; // Sommerzeit MESZ Anpassung
+                    if (endHours >= 24) endHours -= 24;
+                }
+                eventEndCheck = new Date(endYear, endMonth, endDay, endHours, endMinutes);
+            } else {
+                // Fallback: Wenn keine Endzeit da ist, standardmäßig 1 Stunde nach Start annehmen
+                eventEndCheck = new Date(year, month, day, hours, minutes);
+                eventEndCheck.setHours(eventEndCheck.getHours() + 1);
+            }
+
             if (eventEndCheck < now) {
                 isPast = true;
             }
