@@ -2,7 +2,7 @@ name: Kalender automatisch aktualisieren
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -59,14 +59,21 @@ jobs:
                               const pad = (n) => String(n).padStart(2, "0");
                               const formatEvent = (start, end) => {
                                   const eventStart = new Date(start);
+                                  const eventEnd = new Date(end);
+
                                   const startFormatted = ev.dateOnly 
                                       ? `${eventStart.getFullYear()}${pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}`
                                       : `${eventStart.getFullYear()}${pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}T${pad(eventStart.getHours())}${pad(eventStart.getMinutes())}00Z`;
+
+                                  const endFormatted = ev.dateOnly 
+                                      ? `${eventEnd.getFullYear()}${pad(eventEnd.getMonth() + 1)}${pad(eventEnd.getDate())}`
+                                      : `${eventEnd.getFullYear()}${pad(eventEnd.getMonth() + 1)}${pad(eventEnd.getDate())}T${pad(eventEnd.getHours())}${pad(eventEnd.getMinutes())}00Z`;
 
                                   allEvents.push({
                                       sourcePerson: source.defaultPerson,
                                       summary: ev.summary || "Kein Titel",
                                       start: startFormatted,
+                                      end: endFormatted,
                                       location: ev.location || "",
                                       description: ev.description || ""
                                   });
