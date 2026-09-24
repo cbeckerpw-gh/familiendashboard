@@ -1,16 +1,37 @@
 let realEvents = [];
+let countdownSeconds = 300; // 5 Minuten in Sekunden
 
 document.addEventListener('DOMContentLoaded', () => {
     setupDates();
     loadCalendarData();
     loadEnergyData();
+    startRefreshTimer(); // Timer starten
 
     // Alle 5 Minuten (300.000 ms) automatisch im Hintergrund auffrischen
     setInterval(() => {
-        loadCalendarData();
-        loadEnergyData();
+        triggerRefresh();
     }, 5 * 60 * 1000);
 });
+
+// TIMER-LOGIK FÜR DEN COUNTDOWN
+function startRefreshTimer() {
+    const timerElement = document.getElementById('refresh-timer');
+    
+    setInterval(() => {
+        countdownSeconds--;
+        
+        if (countdownSeconds <= 0) {
+            countdownSeconds = 300; // Zurücksetzen (wird durch Refresh ohnehin gemacht)
+        }
+        
+        const minutes = Math.floor(countdownSeconds / 60);
+        const seconds = countdownSeconds % 60;
+        
+        if (timerElement) {
+            timerElement.textContent = `Nächster Abruf: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+    }, 1000);
+}
 
 // DATUMS-KÖPFE SETZEN
 function setupDates() {
@@ -146,7 +167,6 @@ function processLoadedEvents(events) {
             const now = new Date();
             let eventEndCheck;
 
-            // Wenn dein Event eine echte Endzeit (z.B. ev.end) hat:
             if (ev.end && ev.end.includes('T')) {
                 const endStr = ev.end;
                 const endYear = parseInt(endStr.substring(0, 4));
@@ -295,8 +315,7 @@ async function loadEnergyData() {
         // 4. Zappi Wallbox
         document.getElementById('zappi-val').innerText = `${data.zappiPower} kW`;
         
-        
-        // 5. Netz / Grid (Vorzeichen umgedreht: positiv = Einspeisung, negativ = Bezug)
+        // 5. Netz / Grid
         const gridElem = document.getElementById('grid-val');
         let gridVal = data.gridPower || 0;
         
@@ -350,9 +369,12 @@ function triggerRefresh() {
         setTimeout(() => btn.style.transform = 'none', 400);
     }
     
+    // Timer direkt wieder auf 5 Minuten (300 Sek.) zurücksetzen
+    countdownSeconds = 300;
+
     // Daten neu einlesen (Kalender & Energie)
     loadCalendarData();
     loadEnergyData();
     
-    console.log('Dashboard manuell aktualisiert.');
+    console.log('Dashboard aktualisiert.');
 }
