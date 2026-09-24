@@ -1,22 +1,6 @@
 [
   {
     "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "20260929T144500Z",
-    "end": "20260929T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "20261006T144500Z",
-    "end": "20261006T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
     "start": "20261005T150000Z",
     "end": "20261005T160000Z",
@@ -44,6 +28,22 @@
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20261007T144500Z",
     "end": "20261007T154500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "20260929T144500Z",
+    "end": "20260929T154500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "20261006T144500Z",
+    "end": "20261006T154500Z",
     "location": "",
     "description": ""
   },
@@ -97,17 +97,17 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "20261007T000000Z",
-    "end": "20261008T000000Z",
+    "summary": "Kinder abholen Oskar um 15Uhr",
+    "start": "20260924T123000Z",
+    "end": "20260924T133000Z",
     "location": "",
     "description": ""
   },
   {
     "sourcePerson": "papa",
-    "summary": "Kinder abholen Oskar um 15Uhr",
-    "start": "20260924T123000Z",
-    "end": "20260924T133000Z",
+    "summary": "HO",
+    "start": "20261007T000000Z",
+    "end": "20261008T000000Z",
     "location": "",
     "description": ""
   }
