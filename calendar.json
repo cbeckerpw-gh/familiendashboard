@@ -1,6 +1,14 @@
 [
   {
     "sourcePerson": "eltern",
+    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
+    "start": "20261005T150000Z",
+    "end": "20261005T160000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
     "summary": "Kindergarten geschlossen Irma (Teamtag)",
     "start": "20260928T000000Z",
     "end": "20260929T000000Z",
@@ -20,14 +28,6 @@
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20261007T144500Z",
     "end": "20261007T154500Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
-    "start": "20261005T150000Z",
-    "end": "20261005T160000Z",
     "location": "",
     "description": ""
   },
@@ -73,18 +73,18 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Geburtstag: Heinz - Gerd Becker",
-    "start": "20261001T000000Z",
-    "end": "20261002T000000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
     "summary": "Sabine Koch Geburtstag",
     "start": "20260930T000000Z",
     "end": "20261001T000000Z",
     "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Geburtstag: Heinz - Gerd Becker",
+    "start": "20261001T000000Z",
+    "end": "20261002T000000Z",
+    "location": "",
     "description": ""
   },
   {
@@ -105,17 +105,17 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Kinder abholen Oskar um 15Uhr",
-    "start": "20260924T123000Z",
-    "end": "20260924T133000Z",
+    "summary": "HO",
+    "start": "20261007T000000Z",
+    "end": "20261008T000000Z",
     "location": "",
     "description": ""
   },
   {
     "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "20261007T000000Z",
-    "end": "20261008T000000Z",
+    "summary": "Kinder abholen Oskar um 15Uhr",
+    "start": "20260924T123000Z",
+    "end": "20260924T133000Z",
     "location": "",
     "description": ""
   }
