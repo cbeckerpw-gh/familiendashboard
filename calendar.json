@@ -1,9 +1,9 @@
 [
   {
     "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
-    "start": "20260923T144500Z",
-    "end": "20260923T154500Z",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
     "location": "",
     "description": ""
   },
@@ -56,10 +56,10 @@
     "description": ""
   },
   {
-    "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
-    "start": "20260928T000000Z",
-    "end": "20260929T000000Z",
+    "sourcePerson": "mama",
+    "summary": "Basar helfen",
+    "start": "20260925T000000Z",
+    "end": "20260926T000000Z",
     "location": "",
     "description": ""
   },
@@ -68,14 +68,6 @@
     "summary": "Arbeiten Blumenladen",
     "start": "20260924T120000Z",
     "end": "20260924T160000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "mama",
-    "summary": "Basar helfen",
-    "start": "20260925T000000Z",
-    "end": "20260926T000000Z",
     "location": "",
     "description": ""
   },
