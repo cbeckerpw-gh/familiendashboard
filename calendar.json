@@ -65,6 +65,14 @@
   },
   {
     "sourcePerson": "mama",
+    "summary": "Arbeiten Blumenladen",
+    "start": "20260924T120000Z",
+    "end": "20260924T160000Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "mama",
     "summary": "Basar helfen",
     "start": "20260925T000000Z",
     "end": "20260926T000000Z",
@@ -72,10 +80,10 @@
     "description": ""
   },
   {
-    "sourcePerson": "mama",
-    "summary": "Arbeiten Blumenladen",
-    "start": "20260924T120000Z",
-    "end": "20260924T160000Z",
+    "sourcePerson": "papa",
+    "summary": "Geburtstag: Heinz - Gerd Becker",
+    "start": "20261001T000000Z",
+    "end": "20261002T000000Z",
     "location": "",
     "description": ""
   },
@@ -85,14 +93,6 @@
     "start": "20260930T000000Z",
     "end": "20261001T000000Z",
     "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Geburtstag: Heinz - Gerd Becker",
-    "start": "20261001T000000Z",
-    "end": "20261002T000000Z",
-    "location": "",
     "description": ""
   },
   {
