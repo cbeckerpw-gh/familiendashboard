@@ -2,7 +2,7 @@ name: Update Energy Data
 
 on:
   schedule:
-    - cron: '*/5 6-22 * * *'  # Tagsüber (von 06:00 bis 22:59 Uhr) alle 5 Minuten
+    - cron: '*/15 6-22 * * *'  # Tagsüber (von 06:00 bis 22:59 Uhr) alle 5 Minuten
     - cron: '0 * * * *'      # Nachts (von 23:00 bis 05:59 Uhr) nur 1x pro Stunde
   workflow_dispatch: # Erlaubt manuelles Starten in GitHub
 
