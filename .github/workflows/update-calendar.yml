@@ -2,12 +2,12 @@ name: Kalender automatisch aktualisieren
 
 on:
   schedule:
-    - cron: '*/15 5-23 * * *'  # Tagsüber (von 06:00 bis 22:59 Uhr) alle 5 Minuten
+    - cron: '*/15 5-23 * * *'  # Tagsüber (von 05:00 bis 23:59 Uhr UTC) alle 15 Minuten
    
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: \({{ github.workflow }}-\){{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -63,12 +63,12 @@ jobs:
                                   const eventEnd = new Date(end);
 
                                   const startFormatted = ev.dateOnly 
-                                      ? `${eventStart.getFullYear()}${pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}`
-                                      : `${eventStart.getFullYear()}${pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}T${pad(eventStart.getHours())}${pad(eventStart.getMinutes())}00Z`;
+                                      ? `\({eventStart.getFullYear()}\){pad(eventStart.getMonth() + 1)}${pad(eventStart.getDate())}`
+                                      : `\({eventStart.getFullYear()}\){pad(eventStart.getMonth() + 1)}\({pad(eventStart.getDate())}T\){pad(eventStart.getHours())}${pad(eventStart.getMinutes())}00Z`;
 
                                   const endFormatted = ev.dateOnly 
-                                      ? `${eventEnd.getFullYear()}${pad(eventEnd.getMonth() + 1)}${pad(eventEnd.getDate())}`
-                                      : `${eventEnd.getFullYear()}${pad(eventEnd.getMonth() + 1)}${pad(eventEnd.getDate())}T${pad(eventEnd.getHours())}${pad(eventEnd.getMinutes())}00Z`;
+                                      ? `\({eventEnd.getFullYear()}\){pad(eventEnd.getMonth() + 1)}${pad(eventEnd.getDate())}`
+                                      : `\({eventEnd.getFullYear()}\){pad(eventEnd.getMonth() + 1)}\({pad(eventEnd.getDate())}T\){pad(eventEnd.getHours())}${pad(eventEnd.getMinutes())}00Z`;
 
                                   allEvents.push({
                                       sourcePerson: source.defaultPerson,
@@ -76,7 +76,8 @@ jobs:
                                       start: startFormatted,
                                       end: endFormatted,
                                       location: ev.location || "",
-                                      description: ev.description || ""
+                                      description: ev.description || "",
+                                      allDay: ev.dateOnly || false // <-- Hier integriert!
                                   });
                               };
 
@@ -102,7 +103,7 @@ jobs:
                               }
                           }
                       }
-                      console.log(`✅ ${source.defaultPerson}: ${allEvents.length - countBefore} Termine im relevanten Zeitraum gefunden.`);
+                      console.log(`✅ \({source.defaultPerson}:\){allEvents.length - countBefore} Termine im relevanten Zeitraum gefunden.`);
                   } catch (e) {
                       console.error(`❌ Fehler beim Abrufen der URL für [${source.defaultPerson}]:`, e.message);
                   }
