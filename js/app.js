@@ -218,3 +218,4 @@ function renderEvents() {
     const afterTomorrowList = realEvents.filter(e => e.day === 'after-tomorrow');
 
     if (todayList.length === 0) todayContainer.innerHTML = '
+}
