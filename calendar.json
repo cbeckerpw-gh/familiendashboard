@@ -1,6 +1,33 @@
 [
   {
     "sourcePerson": "eltern",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
@@ -27,26 +54,8 @@
     "allDay": false
   },
   {
-    "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "sourcePerson": "mama",
+    "summary": "Basar helfen",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
@@ -63,11 +72,11 @@
     "allDay": false
   },
   {
-    "sourcePerson": "mama",
-    "summary": "Basar helfen",
+    "sourcePerson": "papa",
+    "summary": "Sabine Koch Geburtstag",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": "",
     "allDay": false
   },
@@ -77,15 +86,6 @@
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": "",
     "allDay": false
   },
@@ -118,18 +118,18 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "HO",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "summary": "Kinder abholen Oskar um 15Uhr",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}3000Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}3000Z",
     "location": "",
     "description": "",
     "allDay": false
   },
   {
     "sourcePerson": "papa",
-    "summary": "Kinder abholen Oskar um 15Uhr",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}3000Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}3000Z",
+    "summary": "HO",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
     "description": "",
     "allDay": false
