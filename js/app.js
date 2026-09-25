@@ -27,8 +27,8 @@ function startRefreshTimer() {
         const seconds = countdownSeconds % 60;
         
         if (timerElement) {
-            timerElement.textContent = `Nächster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
-        }
+    timerElement.textContent = `Nächster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
+}
     }, 1000);
 }
 
