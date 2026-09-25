@@ -236,3 +236,60 @@ function renderEvents() {
         else if (ev.day === 'after-tomorrow') afterTomorrowContainer.appendChild(card);
     });
 }
+
+// ENERGIE-DATEN LADEN (Aus energy.json der GitHub Action)
+async function loadEnergyData() {
+    try {
+        const response = await fetch('energy.json?' + new Date().getTime()); // Cache-Buster
+        if (!response.ok) throw new Error('Netzwerk-Antwort für Energie war nicht ok');
+        
+        const data = await response.json();
+
+        // 1. PV-Leistung
+        document.getElementById('pv-val').innerText = `${data.pvPower} kW`;
+
+        // 2. Speicher mit Logik (positive Werte = Laden/Grün, negative = Entladen/Blau)
+        const batteryElem = document.getElementById('battery-val');
+        let batteryVal = data.batteryPower || 0;
+        let batteryArrow = '';
+        let batteryColor = '';
+        
+        if (batteryVal > 0.05) {
+            batteryArrow = ' ↗ (Laden)';
+            batteryColor = '#2ecc71'; // Grün
+        } else if (batteryVal < -0.05) {
+            batteryArrow = ' ↘ (Entladen)';
+            batteryColor = '#3498db'; // Blau
+        } else {
+            batteryArrow = ' ⏸ (Standby)';
+            batteryColor = 'inherit';
+            batteryVal = 0;
+        }
+        batteryElem.innerHTML = `${data.batterySoc}% (\({batteryVal > 0 ? '+' : ''}\){batteryVal} kW${batteryArrow})`;
+
+        // 3. Hausverbrauch
+        document.getElementById('home-val').innerText = `${data.housePower} kW`;
+
+        // 4. Zappi Wallbox
+        document.getElementById('zappi-val').innerText = `${data.zappiPower} kW`;
+        
+        // 5. Netz / Grid
+        const gridElem = document.getElementById('grid-val');
+        let gridVal = data.gridPower || 0;
+        
+        if (gridVal > 0.05) {
+            gridElem.innerHTML = `Einspeisung: ${gridVal} kW ↗`;
+        } else if (gridVal < -0.05) {
+            gridElem.innerHTML = `Bezug: ${Math.abs(gridVal)} kW ↙`;
+        } else {
+            gridElem.innerHTML = `0.0 kW (Neutral)`;
+        }
+        if (data.updatedAt) {
+            const updateTime = new Date(data.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('energy-updated').innerText = `Stand: ${updateTime} Uhr`;
+        }
+
+    } catch (error) {
+        console.error('Fehler beim Laden der energy.json:', error);
+    }
+}
