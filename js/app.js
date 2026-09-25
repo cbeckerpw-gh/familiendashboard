@@ -27,7 +27,7 @@ function startRefreshTimer() {
         const seconds = countdownSeconds % 60;
         
         if (timerElement) {
-            timerElement.textContent = `Nächster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
+            timerElement.textContent = `Nächster Abruf: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
     }, 1000);
 }
@@ -266,7 +266,7 @@ async function loadEnergyData() {
             batteryColor = 'inherit';
             batteryVal = 0;
         }
-        batteryElem.innerHTML = `${data.batterySoc}% (\({batteryVal > 0 ? '+' : ''}\){batteryVal} kW${batteryArrow})`;
+        batteryElem.innerHTML = `${data.batterySoc}% (${batteryVal > 0 ? '+' : ''}${batteryVal} kW${batteryArrow})`;
 
         // 3. Hausverbrauch
         document.getElementById('home-val').innerText = `${data.housePower} kW`;
