@@ -104,10 +104,11 @@ function processLoadedEvents(events) {
             }
         }
 
-        const startStr = ev.start;
-        const year = parseInt(startStr.substring(0, 4));
-        const month = parseInt(startStr.substring(4, 6)) - 1;
-        const day = parseInt(startStr.substring(6, 8));
+        const cleanStart = ev.start.replace(/-/g, '');
+        const startStr = cleanStart;
+        const year = parseInt(startStr.substring(0, 4), 10);
+        const month = parseInt(startStr.substring(4, 6), 10) - 1;
+        const day = parseInt(startStr.substring(6, 8), 10);
 
         const eventDate = new Date(year, month, day);
         eventDate.setHours(0, 0, 0, 0);
