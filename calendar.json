@@ -1,14 +1,6 @@
 [
   {
     "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
-    "start": "20260928T000000Z",
-    "end": "20260929T000000Z",
-    "location": "",
-    "description": ""
-  },
-  {
-    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20260930T144500Z",
     "end": "20260930T154500Z",
@@ -20,6 +12,14 @@
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "20261007T144500Z",
     "end": "20261007T154500Z",
+    "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "start": "20260928T000000Z",
+    "end": "20260929T000000Z",
     "location": "",
     "description": ""
   },
@@ -65,18 +65,18 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
-    "start": "20260930T000000Z",
-    "end": "20261001T000000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
-    "description": ""
-  },
-  {
-    "sourcePerson": "papa",
     "summary": "Geburtstag: Heinz - Gerd Becker",
     "start": "20261001T000000Z",
     "end": "20261002T000000Z",
     "location": "",
+    "description": ""
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Sabine Koch Geburtstag",
+    "start": "20260930T000000Z",
+    "end": "20261001T000000Z",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": ""
   },
   {
