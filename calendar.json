@@ -1,9 +1,18 @@
 [
   {
     "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
     "location": "",
     "description": "",
     "allDay": false
@@ -19,24 +28,6 @@
   },
   {
     "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "eltern",
-    "summary": "Irma - Kinderturnen 17:15 -18:15Uhr",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "eltern",
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
@@ -49,6 +40,15 @@
     "summary": "Oskar - Kinderturnen 17:15-18:15Uhr",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}4500Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}4500Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "eltern",
+    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
     "description": "",
     "allDay": false
@@ -64,19 +64,19 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
+    "summary": "Geburtstag: Heinz - Gerd Becker",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
+    "location": "",
     "description": "",
     "allDay": false
   },
   {
     "sourcePerson": "papa",
-    "summary": "Geburtstag: Heinz - Gerd Becker",
+    "summary": "Sabine Koch Geburtstag",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": "",
     "allDay": false
   },
