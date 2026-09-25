@@ -217,5 +217,5 @@ function renderEvents() {
     const tomorrowList = realEvents.filter(e => e.day === 'tomorrow');
     const afterTomorrowList = realEvents.filter(e => e.day === 'after-tomorrow');
 
-    if (todayList.length === 0) todayContainer.innerHTML = '
-}
+    if (todayList.length === 0) {
+        todayContainer.innerHTML = '
