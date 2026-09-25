@@ -27,7 +27,7 @@ function startRefreshTimer() {
         const seconds = countdownSeconds % 60;
         
         if (timerElement) {
-            timerElement.textContent = `Naechster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
+            timerElement.textContent = `Nächster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
         }
     }, 1000);
 }
@@ -132,14 +132,14 @@ function processLoadedEvents(events) {
             return;
         }
 
-        let timeStr = 'Ganztaegig';
+        let timeStr = 'Ganztägig';
         let rawTime = '00:00';
         let hours = 0;
         let minutes = 0;
         let hasTime = false;
 
         if (ev.allDay) {
-            timeStr = 'Ganztaegig';
+            timeStr = 'Ganztägig';
             rawTime = '00:00';
         } else if (startStr.includes('T')) {
             const timePart = startStr.split('T')[1];
