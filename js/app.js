@@ -218,4 +218,21 @@ function renderEvents() {
     const afterTomorrowList = realEvents.filter(e => e.day === 'after-tomorrow');
 
     if (todayList.length === 0) {
-        todayContainer.innerHTML = '
+        todayContainer.innerHTML = `Keine Termine`;
+    }
+    if (tomorrowList.length === 0) {
+        tomorrowContainer.innerHTML = `Keine Termine`;
+    }
+    if (afterTomorrowList.length === 0) {
+        afterTomorrowContainer.innerHTML = `Keine Termine`;
+    }
+
+    realEvents.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
+
+    realEvents.forEach(ev => {
+        const card = createEventCard(ev);
+        if (ev.day === 'today') todayContainer.appendChild(card);
+        else if (ev.day === 'tomorrow') tomorrowContainer.appendChild(card);
+        else if (ev.day === 'after-tomorrow') afterTomorrowContainer.appendChild(card);
+    });
+}
