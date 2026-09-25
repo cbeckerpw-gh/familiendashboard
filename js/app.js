@@ -5,9 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDates();
     loadCalendarData();
     loadEnergyData();
-    startRefreshTimer(); // Timer starten
+    startRefreshTimer();
 
-    // Alle 5 Minuten (300.000 ms) automatisch im Hintergrund auffrischen
     setInterval(() => {
         triggerRefresh();
     }, 5 * 60 * 1000);
@@ -21,7 +20,7 @@ function startRefreshTimer() {
         countdownSeconds--;
         
         if (countdownSeconds <= 0) {
-            countdownSeconds = 300; // Zurücksetzen (wird durch Refresh ohnehin gemacht)
+            countdownSeconds = 300;
         }
         
         const minutes = Math.floor(countdownSeconds / 60);
@@ -47,7 +46,7 @@ function setupDates() {
     document.getElementById('date-after-tomorrow').innerText = afterTomorrow.toLocaleDateString('de-DE', options);
 }
 
-// KALENDER LADEN (Direkt aus der stabilen calendar.json der GitHub Action)
+// KALENDER LADEN
 async function loadCalendarData() {
     try {
         const response = await fetch('calendar.json?' + new Date().getTime());
@@ -75,18 +74,13 @@ function processLoadedEvents(events) {
         const hasOskar = lowerTitle.includes('oskar');
         const hasIrma = lowerTitle.includes('irma');
 
-        // 1. PRIORITÄT: Wenn der Termin direkt aus Papas oder Mamas Kalender kommt, 
-        // bleibt er fest dort und wird nicht durch Namen im Text überschrieben!
         if (person === 'papa') {
             name = 'Papa';
             icon = '👨';
         } else if (person === 'mama') {
             name = 'Mama';
             icon = '👩';
-        } 
-        // 2. PRIORITÄT: Erst wenn es aus dem allgemeinen Familienkalender ('eltern') kommt, 
-        // greift die Namenserkennung für die Kinder oder Elternabende.
-        else {
+        } else {
             if (hasOskar && hasIrma) {
                 person = 'geschwister';
                 name = 'Oskar & Irma';
@@ -135,7 +129,7 @@ function processLoadedEvents(events) {
         } else if (eventDate.getTime() === afterTomorrow.getTime()) {
             dayCategory = 'after-tomorrow';
         } else {
-            return; // Termine außerhalb der 3 Tage ignorieren
+            return;
         }
 
         let timeStr = 'Ganztägig';
@@ -144,10 +138,9 @@ function processLoadedEvents(events) {
         let minutes = 0;
         let hasTime = false;
 
-        // NEU: Hier prüfen wir, ob es laut iCal-Daten ein echter ganztägiger Termin ist
         if (ev.allDay) {
             timeStr = 'Ganztägig';
-            rawTime = '00:00'; // Damit ganztägige Termine ganz nach oben sortiert werden
+            rawTime = '00:00';
         } else if (startStr.includes('T')) {
             const timePart = startStr.split('T')[1];
             hours = parseInt(timePart.substring(0, 2), 10);
@@ -155,7 +148,7 @@ function processLoadedEvents(events) {
             hasTime = true;
 
             if (startStr.endsWith('Z')) {
-                hours += 2; // Sommerzeit MESZ Anpassung
+                hours += 2;
                 if (hours >= 24) hours -= 24;
             }
 
@@ -165,7 +158,6 @@ function processLoadedEvents(events) {
             timeStr = `${rawTime} Uhr`;
         }
 
-        // Prüfen, ob der Termin heute bereits vorbei ist (anhand der echten Endzeit, falls vorhanden)
         let isPast = false;
         if (dayCategory === 'today' && hasTime) {
             const now = new Date();
@@ -181,12 +173,11 @@ function processLoadedEvents(events) {
                 let endMinutes = parseInt(endTimePart.substring(2, 4), 10);
 
                 if (endStr.endsWith('Z')) {
-                    endHours += 2; // Sommerzeit MESZ Anpassung
+                    endHours += 2;
                     if (endHours >= 24) endHours -= 24;
                 }
                 eventEndCheck = new Date(endYear, endMonth, endDay, endHours, endMinutes);
             } else {
-                // Fallback: Wenn keine Endzeit da ist, standardmäßig 1 Stunde nach Start annehmen
                 eventEndCheck = new Date(year, month, day, hours, minutes);
                 eventEndCheck.setHours(eventEndCheck.getHours() + 1);
             }
