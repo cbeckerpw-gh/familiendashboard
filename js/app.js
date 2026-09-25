@@ -266,7 +266,6 @@ async function loadEnergyData() {
             batteryVal = 0;
         }
         batteryElem.innerHTML = `${data.batterySoc}% (\({batteryVal > 0 ? '+' : ''}\){batteryVal} kW${batteryArrow})`;
-
         // 3. Hausverbrauch
         document.getElementById('home-val').innerText = `${data.housePower} kW`;
 
