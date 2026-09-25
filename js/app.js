@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 5 * 60 * 1000);
 });
 
-// TIMER-LOGIK FÜR DEN COUNTDOWN
+// TIMER-LOGIK FUER DEN COUNTDOWN
 function startRefreshTimer() {
     const timerElement = document.getElementById('refresh-timer');
     
@@ -27,12 +27,12 @@ function startRefreshTimer() {
         const seconds = countdownSeconds % 60;
         
         if (timerElement) {
-            timerElement.textContent = `Nächster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
+            timerElement.textContent = `Naechster Abruf: \({String(minutes).padStart(2, '0')}:\){String(seconds).padStart(2, '0')}`;
         }
     }, 1000);
 }
 
-// DATUMS-KÖPFE SETZEN
+// DATUMS-KOEPFE SETZEN
 function setupDates() {
     const options = { weekday: 'short', day: '2-digit', month: '2-digit' };
     const today = new Date();
@@ -132,14 +132,14 @@ function processLoadedEvents(events) {
             return;
         }
 
-        let timeStr = 'Ganztägig';
+        let timeStr = 'Ganztaegig';
         let rawTime = '00:00';
         let hours = 0;
         let minutes = 0;
         let hasTime = false;
 
         if (ev.allDay) {
-            timeStr = 'Ganztägig';
+            timeStr = 'Ganztaegig';
             rawTime = '00:00';
         } else if (startStr.includes('T')) {
             const timePart = startStr.split('T')[1];
