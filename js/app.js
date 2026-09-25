@@ -4,6 +4,7 @@ let countdownSeconds = 300; // 5 Minuten in Sekunden
 document.addEventListener('DOMContentLoaded', () => {
     setupDates();
     loadCalendarData();
+    loadEnergyData();
     startRefreshTimer();
 
     setInterval(() => {
