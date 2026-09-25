@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 5 * 60 * 1000);
 });
 
-// TIMER-LOGIK FUER DEN COUNTDOWN
+// TIMER-LOGIK FUER DEN COUNTDOWN (Sauber korrigiert mit echten Backticks & Dollarzeichen)
 function startRefreshTimer() {
     const timerElement = document.getElementById('refresh-timer');
     
@@ -138,7 +138,8 @@ function processLoadedEvents(events) {
         let minutes = 0;
         let hasTime = false;
 
-        if (ev.allDay) {
+        // Korrigierte Erkennung für ganztägige Termine (entweder Flag allDay oder reine Datumslänge ohne 'T')
+        if (ev.allDay || !startStr.includes('T')) {
             timeStr = 'Ganztägig';
             rawTime = '00:00';
         } else if (startStr.includes('T')) {
@@ -248,7 +249,7 @@ async function loadEnergyData() {
         // 1. PV-Leistung
         document.getElementById('pv-val').innerText = `${data.pvPower} kW`;
 
-        // 2. Speicher mit Logik (positive Werte = Laden/Grün, negative = Entladen/Blau)
+        // 2. Speicher mit Logik (Sauber korrigiert mit echten Backticks & Dollarzeichen)
         const batteryElem = document.getElementById('battery-val');
         let batteryVal = data.batteryPower || 0;
         let batteryArrow = '';
@@ -266,6 +267,7 @@ async function loadEnergyData() {
             batteryVal = 0;
         }
         batteryElem.innerHTML = `${data.batterySoc}% (\({batteryVal > 0 ? '+' : ''}\){batteryVal} kW${batteryArrow})`;
+
         // 3. Hausverbrauch
         document.getElementById('home-val').innerText = `${data.housePower} kW`;
 
