@@ -37,7 +37,7 @@
   },
   {
     "sourcePerson": "eltern",
-    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
+    "summary": "Kindergarten geschlossen Irma (Teamtag)",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
@@ -46,7 +46,7 @@
   },
   {
     "sourcePerson": "eltern",
-    "summary": "Kindergarten geschlossen Irma (Teamtag)",
+    "summary": "Oskar - Kinderfeuerwehr (Lerbeck) 17Uhr",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
