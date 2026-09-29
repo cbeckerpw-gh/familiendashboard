@@ -82,7 +82,7 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "1Monatiges Susi 12.08.2018",
+    "summary": "Geburtstag: Heinz - Gerd Becker",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
@@ -91,7 +91,7 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Geburtstag: Heinz - Gerd Becker",
+    "summary": "1Monatiges Susi 12.08.2018",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
