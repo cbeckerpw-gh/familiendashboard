@@ -64,10 +64,10 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Geburtstag: Heinz - Gerd Becker",
+    "summary": "Sabine Koch Geburtstag",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
+    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
     "description": "",
     "allDay": false
   },
@@ -82,10 +82,10 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Sabine Koch Geburtstag",
+    "summary": "Geburtstag: Heinz - Gerd Becker",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "Königsberger Str. 12, 32457 Porta Westfalica, Deutschland",
+    "location": "",
     "description": "",
     "allDay": false
   },
