@@ -4,6 +4,6 @@
   "batterySoc": 0,
   "housePower": 0,
   "zappiPower": 0,
-  "gridPower": 1.1,
-  "updatedAt": "2026-10-02T04:17:11.916Z"
+  "gridPower": 0.99,
+  "updatedAt": "2026-10-02T05:16:02.700Z"
 }
