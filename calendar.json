@@ -73,15 +73,6 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Josy Geburtstag 2010",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "papa",
     "summary": "1Monatiges Susi 12.08.2018",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
@@ -91,35 +82,35 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "Papiere/Hausarbeit",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}1500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Papiere/Hausarbeit",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}1500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "Papiere/Hausarbeit",
-    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}1500Z",
-    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
-    "location": "",
-    "description": "",
-    "allDay": false
-  },
-  {
-    "sourcePerson": "papa",
-    "summary": "HO",
+    "summary": "Josy Geburtstag 2010",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Papiere/Hausarbeit",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}1500Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Papiere/Hausarbeit",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}1500Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "Papiere/Hausarbeit",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}1500Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
     "description": "",
@@ -136,7 +127,7 @@
   },
   {
     "sourcePerson": "papa",
-    "summary": "10. Hochzeitstag Steffi & Steffen",
+    "summary": "HO",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
@@ -146,6 +137,15 @@
   {
     "sourcePerson": "papa",
     "summary": "HO",
+    "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
+    "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
+    "location": "",
+    "description": "",
+    "allDay": false
+  },
+  {
+    "sourcePerson": "papa",
+    "summary": "10. Hochzeitstag Steffi & Steffen",
     "start": "({eventStart.getFullYear()}){pad(eventStart.getMonth() + 1)}({pad(eventStart.getDate())}T){pad(eventStart.getHours())}0000Z",
     "end": "({eventEnd.getFullYear()}){pad(eventEnd.getMonth() + 1)}({pad(eventEnd.getDate())}T){pad(eventEnd.getHours())}0000Z",
     "location": "",
